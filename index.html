@@ -8,5 +8,26 @@
   </head>
   <body>
     <div id="root"></div>
+    <script>
+  // Background music
+  const bgMusic = new Audio("./audio/music.mp3");
+  bgMusic.loop = true;
+
+  // Play music after first user click (browsers block autoplay)
+  document.addEventListener("click", () => {
+    bgMusic.play().catch(err => console.log("Audio play blocked:", err));
+  }, { once: true });
+
+  // Example: jump sound effect
+  const jumpSound = new Audio("./audio/jump.mp3");
+  function playJump() {
+    jumpSound.currentTime = 0;
+    jumpSound.play();
+  }
+
+  // Example usage: call playJump() when player jumps
+  // playJump();
+</script>
+
   </body>
 </html>
