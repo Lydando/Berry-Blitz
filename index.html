@@ -10,23 +10,23 @@
     <div id="root"></div>
     <script>
   // Background music
-  const bgMusic = new Audio("./audio/music.mp3");
+  const bgMusic = new Audio("./sounds/background.mp3");
   bgMusic.loop = true;
 
   // Play music after first user click (browsers block autoplay)
   document.addEventListener("click", () => {
-    bgMusic.play().catch(err => console.log("Audio play blocked:", err));
+    bgMusic.play().catch(err => console.log("Sounds play blocked:", err));
   }, { once: true });
 
-  // Example: jump sound effect
-  const jumpSound = new Audio("./audio/jump.mp3");
-  function playJump() {
-    jumpSound.currentTime = 0;
-    jumpSound.play();
+  // Example: success sound effect
+  const successSound = new Audio("./sounds/success.mp3");
+  function playSuccess() {
+    successSound.currentTime = 0;
+    successSound.play();
   }
 
-  // Example usage: call playJump() when player jumps
-  // playJump();
+  // Example usage: call playSuccess() when player is successfull
+  // playSuccess();
 </script>
 
   </body>
