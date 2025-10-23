@@ -3,20 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
-    <script type="module" crossorigin src="public/assets/index-Cdy_on9X.js">
-      const bgMusic = new Audio("./sounds/background.mp3");
-  bgMusic.loop = true;
-
-  // Play after first click anywhere
-  function startMusic() {
-    bgMusic.play()
-      .then(() => console.log("Music playing"))
-      .catch(err => console.log("Audio blocked:", err));
-    document.removeEventListener("click", startMusic);
-  }
-
-  document.addEventListener("click", startMusic);
-    </script>
+    <script type="module" crossorigin src="public/assets/index-Cdy_on9X.js"></script>
     <link rel="stylesheet" crossorigin href="public/assets/index-CkRX1Kq5.css">
   </head>
   <body>
