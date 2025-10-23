@@ -8,26 +8,19 @@
   </head>
   <body>
     <div id="root"></div>
-    <script>
-  // Background music
+<script>
   const bgMusic = new Audio("./sounds/background.mp3");
   bgMusic.loop = true;
 
-  // Play music after first user click (browsers block autoplay)
-  document.addEventListener("click", () => {
-    bgMusic.play().catch(err => console.log("Sounds play blocked:", err));
-  }, { once: true });
-
-  // Example: success sound effect
-  const successSound = new Audio("./sounds/success.mp3");
-  function playSuccess() {
-    successSound.currentTime = 0;
-    successSound.play();
+  // Play after first click anywhere
+  function startMusic() {
+    bgMusic.play()
+      .then(() => console.log("Music playing"))
+      .catch(err => console.log("Audio blocked:", err));
+    document.removeEventListener("click", startMusic);
   }
 
-  // Example usage: call playSuccess() when player is successfull
-  // playSuccess();
+  document.addEventListener("click", startMusic);
 </script>
-
   </body>
 </html>
