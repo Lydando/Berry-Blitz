@@ -1,12 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
-    <script type="module" crossorigin src="public/assets/index-Cdy_on9X.js"></script>
-    <link rel="stylesheet" crossorigin href="public/assets/index-CkRX1Kq5.css">
-  </head>
+ <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+  
+  <!-- App name and theme color -->
+  <meta name="theme-color" content="#6c1aff" />
+  <meta name="application-name" content="Berry Blitz" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Berry Blitz">
+
+  <!-- Manifest -->
+  <link rel="manifest" href="manifest.json">
+
+  <!-- Icons for app -->
+  <link rel="icon" type="image/png" sizes="192x192" href="public/icon-192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="public/icon-512.png">
+  <link rel="apple-touch-icon" href="public/icon-192.png">
+
+  <!-- Your existing JS and CSS -->
+  <script type="module" crossorigin src="public/assets/index-Cdy_on9X.js"></script>
+  <link rel="stylesheet" crossorigin href="public/assets/index-CKRX1Kq5.css">
+</head>
   <body>
-    <div id="root"></div>
-  </body>
+  <div id="root"></div>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('service-worker.js')
+          .then(reg => console.log('Service worker registered:', reg))
+          .catch(err => console.log('Service worker not registered:', err));
+      });
+    }
+  </script>
+</body>
 </html>
