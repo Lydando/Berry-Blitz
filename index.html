@@ -41,7 +41,7 @@
 <script>
   const bgMusic = document.getElementById('bgMusic');
 
-  // Only play music after the first click/tap
+  // Play on first user interaction (browser requirement)
   document.body.addEventListener('click', function startMusic() {
     if (bgMusic.paused) {
       bgMusic.play().catch(err => console.log("Autoplay blocked:", err));
@@ -49,25 +49,28 @@
     document.body.removeEventListener('click', startMusic);
   });
 
-  // Handle mute/unmute button
-  const muteButton = document.getElementById('muteButton'); // Your existing mute button ID
-
+  // Mute/unmute button setup
+  const muteButton = document.getElementById('muteButton');
   if (muteButton) {
     muteButton.addEventListener('click', () => {
-      if (bgMusic.muted) {
-        bgMusic.muted = false;
-        muteButton.innerText = "Mute";  // optional visual toggle
-      } else {
-        bgMusic.muted = true;
-        muteButton.innerText = "Unmute"; // optional visual toggle
-      }
+      bgMusic.muted = !bgMusic.muted;
+      muteButton.innerText = bgMusic.muted ? "Unmute" : "Mute";
     });
   }
 
-  // Stop music when the tab or page closes
-  window.addEventListener('beforeunload', () => {
+  // Pause music when page is hidden (e.g., pressing Home or switching apps)
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) {
+      bgMusic.pause();
+    } else if (!bgMusic.paused && !bgMusic.muted) {
+      // Optional: resume automatically when back
+      bgMusic.play().catch(err => console.log("Resume failed:", err));
+    }
+  });
+
+  // Optional safeguard if the browser suspends the tab fully
+  window.addEventListener('pagehide', () => {
     bgMusic.pause();
-    bgMusic.currentTime = 0;
   });
 </script>
 
