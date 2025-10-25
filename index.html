@@ -35,6 +35,15 @@
       });
     }
   </script>
+    <audio id="bgMusic" src="sounds/background.mp3" preload="auto" loop></audio>
+  <script>
+    document.body.addEventListener('click', function() {
+      const bgMusic = document.getElementById('bgMusic');
+      if (bgMusic.paused) {
+        bgMusic.play().catch(err => console.log("Autoplay blocked:", err));
+      }
+    });
+  </script>
 
   </body>
 </html>
