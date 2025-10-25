@@ -35,15 +35,41 @@
       });
     }
   </script>
-    <audio id="bgMusic" src="public/sounds/background.mp3" preload="auto" loop></audio>
-  <script>
-    document.body.addEventListener('click', function() {
-      const bgMusic = document.getElementById('bgMusic');
-      if (bgMusic.paused) {
-        bgMusic.play().catch(err => console.log("Autoplay blocked:", err));
+    <!-- Background music -->
+<audio id="bgMusic" src="public/sounds/background.mp3" preload="auto" loop></audio>
+
+<script>
+  const bgMusic = document.getElementById('bgMusic');
+
+  // Only play music after the first click/tap
+  document.body.addEventListener('click', function startMusic() {
+    if (bgMusic.paused) {
+      bgMusic.play().catch(err => console.log("Autoplay blocked:", err));
+    }
+    document.body.removeEventListener('click', startMusic);
+  });
+
+  // Handle mute/unmute button
+  const muteButton = document.getElementById('muteButton'); // Your existing mute button ID
+
+  if (muteButton) {
+    muteButton.addEventListener('click', () => {
+      if (bgMusic.muted) {
+        bgMusic.muted = false;
+        muteButton.innerText = "Mute";  // optional visual toggle
+      } else {
+        bgMusic.muted = true;
+        muteButton.innerText = "Unmute"; // optional visual toggle
       }
     });
-  </script>
+  }
+
+  // Stop music when the tab or page closes
+  window.addEventListener('beforeunload', () => {
+    bgMusic.pause();
+    bgMusic.currentTime = 0;
+  });
+</script>
 
   </body>
 </html>
