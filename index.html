@@ -71,6 +71,9 @@
   // Optional safeguard if the browser suspends the tab fully
   window.addEventListener('pagehide', () => {
     bgMusic.pause();
+        else if (!bgMusic.paused && !bgMusic.muted) {
+      bgMusic.play().catch(err => console.log("Resume failed:", err));
+    }
   });
 </script>
 
