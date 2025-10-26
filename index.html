@@ -35,34 +35,53 @@
 
 <script>
   const bgMusic = document.getElementById('bgMusic');
-  const muteButton = document.getElementById('muteButton');
+  bgMusic.volume = 0.5;
 
-  // ✅ Start background music automatically
-  window.addEventListener('load', () => {
-    bgMusic.volume = 0.5; // moderate volume
-    bgMusic.play().catch(err => console.log("Autoplay prevented:", err));
-  });
+  // ✅ Start music only after first interaction (to satisfy autoplay policy)
+  let started = false;
+  const startMusic = () => {
+    if (!started) {
+      bgMusic.play().catch(err => console.log("Autoplay blocked:", err));
+      started = true;
+    }
+  };
+  document.body.addEventListener("click", startMusic, { once: true });
+  document.body.addEventListener("touchstart", startMusic, { once: true });
 
-  // ✅ Toggle mute/unmute button
-  if (muteButton) {
-    muteButton.addEventListener('click', () => {
-      bgMusic.muted = !bgMusic.muted;
-      muteButton.innerText = bgMusic.muted ? "Unmute" : "Mute";
+  // ✅ Observe for dynamically created mute/unmute button
+  const observer = new MutationObserver(() => {
+    const buttons = document.querySelectorAll("button");
+    buttons.forEach(btn => {
+      if (btn.className.includes("bg-yellow")) {
+        if (!btn.dataset.listenerAdded) {
+          btn.addEventListener("click", () => {
+            // Toggle mute state
+            if (bgMusic.paused) {
+              bgMusic.play().catch(err => console.log("Resume failed:", err));
+            } else {
+              bgMusic.pause();
+            }
+          });
+          btn.dataset.listenerAdded = "true";
+        }
+      }
     });
-  }
+  });
+  observer.observe(document.body, { childList: true, subtree: true });
 
-  // ✅ Pause music when user presses home / switches apps
+  // ✅ Pause when minimized or Home button pressed
   document.addEventListener("visibilitychange", () => {
     if (document.hidden) {
       bgMusic.pause();
-    } else if (!bgMusic.muted) {
+    } else if (started && !bgMusic.paused) {
       bgMusic.play().catch(err => console.log("Resume failed:", err));
     }
   });
 
-  // ✅ Stop completely when page is being unloaded (just in case)
-  window.addEventListener('pagehide', () => {
+  // ✅ Stop audio when page fully unloaded
+  window.addEventListener("pagehide", () => {
     bgMusic.pause();
+    started = false;
   });
 </script>
 
