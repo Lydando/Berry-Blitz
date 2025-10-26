@@ -57,24 +57,35 @@
 
     <!-- Optional: Pause music on tab hide and page leave -->
    <script>
-  const root = document.getElementById('root');
+document.addEventListener('visibilitychange', () => {
+    const music = window.bgMusic;
+    if (!music) return;
 
-  // Observe changes in the #root element
-  const observer = new MutationObserver(() => {
-      // Check if the home screen is present
-      const homeScreen = root.querySelector('[data-screen="home"]'); // we'll mark home screen
-      if (window.bgMusic) {
-          if (homeScreen) {
-              window.bgMusic.pause();
-          } else if (!window.bgMusic.muted) {
-              window.bgMusic.play().catch(err => console.log("Resume failed:", err));
-          }
-      }
-  });
+    if (document.hidden) {
+        // Pause immediately when tab is hidden
+        if (!music.paused) music.pause();
+    } else {
+        // Resume only if not muted
+        if (!music.muted) {
+            music.play().catch(err => console.log("Resume failed:", err));
+        }
+    }
+});
 
-  // Start observing for child changes
-  observer.observe(root, { childList: true, subtree: true });
-  </script>
+// Also pause when leaving the page (for safety)
+window.addEventListener('pagehide', () => {
+    if (window.bgMusic && !window.bgMusic.paused) {
+        window.bgMusic.pause();
+    }
+});
+
+// Optional: resume when coming back to the page
+window.addEventListener('pageshow', () => {
+    if (window.bgMusic && !window.bgMusic.muted) {
+        window.bgMusic.play().catch(err => console.log("Resume failed:", err));
+    }
+});
+</script>
 
   </body>
 </html>
