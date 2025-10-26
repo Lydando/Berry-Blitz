@@ -22,35 +22,21 @@
     <link rel="stylesheet" crossorigin href="public/assets/index-CkRX1Kq5.css" />
   </head>
   <body>
-    <p>To download Berry Blitz, <a
-    href="https://github.com/Lydando/Berry-Blitz/releases/download/v1.0.0/BerryBlitz.apk">click here</a>.</p>
-
-    <div id="root"></div> 
-    <script>
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('service-worker.js')
-            .then(reg => console.log('Service worker registered:', reg))
-            .catch(err => console.log('Service worker not registered:', err));
-      });
-    }
-  </script>
+    <button id="muteButton">Mute</button>
     <!-- Background music -->
 <audio id="bgMusic" src="public/sounds/background.mp3" preload="auto" loop></audio>
 
 <script>
   const bgMusic = document.getElementById('bgMusic');
+  const muteButton = document.getElementById('muteButton');
 
-  // Play on first user interaction (browser requirement)
-  document.body.addEventListener('click', function startMusic() {
-    if (bgMusic.paused) {
-      bgMusic.play().catch(err => console.log("Autoplay blocked:", err));
-    }
-    document.body.removeEventListener('click', startMusic);
+  // ✅ Start background music automatically
+  window.addEventListener('load', () => {
+    bgMusic.volume = 0.5; // moderate volume
+    bgMusic.play().catch(err => console.log("Autoplay prevented:", err));
   });
 
-  // Mute/unmute button setup
-  const muteButton = document.getElementById('muteButton');
+  // ✅ Toggle mute/unmute button
   if (muteButton) {
     muteButton.addEventListener('click', () => {
       bgMusic.muted = !bgMusic.muted;
@@ -58,20 +44,18 @@
     });
   }
 
-  // Pause music when page is hidden (e.g., pressing Home or switching apps)
+  // ✅ Pause music when user presses home / switches apps
   document.addEventListener("visibilitychange", () => {
     if (document.hidden) {
       bgMusic.pause();
-    } else if (!bgMusic.paused && !bgMusic.muted) {
-      // Optional: resume automatically when back
+    } else if (!bgMusic.muted) {
       bgMusic.play().catch(err => console.log("Resume failed:", err));
     }
   });
 
-  // Optional safeguard if the browser suspends the tab fully
+  // ✅ Stop completely when page is being unloaded (just in case)
   window.addEventListener('pagehide', () => {
     bgMusic.pause();
-  
   });
 </script>
 
