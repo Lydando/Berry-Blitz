@@ -34,58 +34,49 @@
     
     <!--Button id -->
     <button id="muteButton">Mute</button>
+    
+    <--Background Audio-->
+<audio id="bgMusic" src="Betterbackground.mp3" loop preload="auto"></audio>
 
-    <!-- Background music -->
-<audio id="bgMusic" src="Betterbackground.mp3" loop preload="auto" ></audio>
-    <script>
-  const bgMusic = document.getElementById('bgMusic');
-  const muteButton = document.getElementById('muteButton');
+<script>
+const bgMusic = document.getElementById('bgMusic');
+const muteButton = document.getElementById('muteButton');
 
-  let userInteracted = false;
-  let isManuallyMuted = false;
+let isMuted = false;
+let userInteracted = false;
 
-  // Start music after first interaction
-  document.body.addEventListener('click', function startMusic() {
+// Start music after first user interaction anywhere
+document.body.addEventListener('click', () => {
     if (!userInteracted) {
-      userInteracted = true;
-      if (!isManuallyMuted) {
+        userInteracted = true;
         bgMusic.play().catch(err => console.log("Autoplay blocked:", err));
-      }
     }
-  });
+}, { once: true });
 
-  // Mute/unmute button
-  if (muteButton) {
-    muteButton.addEventListener('click', () => {
-      isManuallyMuted = !isManuallyMuted;
-      bgMusic.muted = isManuallyMuted;
+// Mute/unmute button
+muteButton.addEventListener('click', () => {
+    isMuted = !isMuted;
+    bgMusic.muted = isMuted;
 
-      if (isManuallyMuted) {
-        bgMusic.pause();
-      } else {
-        // Resume only if app is visible
-        if (!document.hidden) {
-          bgMusic.play().catch(err => console.log("Resume failed:", err));
-        }
-      }
+    // Ensure music plays if unmuted
+    if (!isMuted && userInteracted) {
+        bgMusic.play().catch(err => console.log("Play failed:", err));
+    }
 
-      muteButton.innerText = isManuallyMuted ? "Unmute" : "Mute";
-    });
-  }
+    muteButton.innerText = isMuted ? "Unmute" : "Mute";
+});
 
-  // Pause when app is minimized or tab is hidden
-  document.addEventListener('visibilitychange', () => {
+// Pause when tab is hidden, resume when visible
+document.addEventListener('visibilitychange', () => {
     if (document.hidden) {
-      bgMusic.pause();
-    } else if (!isManuallyMuted && userInteracted) {
-      bgMusic.play().catch(err => console.log("Resume failed:", err));
+        bgMusic.pause();
+    } else if (!isMuted && userInteracted) {
+        bgMusic.play().catch(err => console.log("Resume failed:", err));
     }
-  });
+});
 
-  // Also pause when leaving page (for safety)
-  window.addEventListener('pagehide', () => {
-    bgMusic.pause();
-  });
+// Safety pause on page leave
+window.addEventListener('pagehide', () => bgMusic.pause());
 </script>
 
   </body>
