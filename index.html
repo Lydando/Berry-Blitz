@@ -22,6 +22,13 @@
     <link rel="stylesheet" crossorigin href="public/assets/index-CkRX1Kq5.css" />
   </head>
   <body>
+    <div id="root"></div> 
+<script> 
+  if ('serviceWorker' in navigator) { 
+  window.addEventListener('load', () => { 
+    navigator.serviceWorker.register('service-worker.js') 
+      .then(reg => console.log('Service worker registered:', reg)) 
+      .catch(err => console.log('Service worker not registered:', err)); }); } </script>
     <!-- Background music -->
 <audio id="bgMusic" src="public/sounds/background.mp3" preload="auto" loop></audio>
 
