@@ -29,59 +29,62 @@
   window.addEventListener('load', () => { 
     navigator.serviceWorker.register('service-worker.js') 
       .then(reg => console.log('Service worker registered:', reg)) 
-      .catch(err => console.log('Service worker not registered:', err)); }); } </script>
+      .catch(err => console.log('Service worker not registered:', err)); }); } 
+</script>
+    
+    <!--Button id -->
+    <button id="muteButton">Mute</button>
+
     <!-- Background music -->
-<audio id="bgMusic" src="public/sounds/background.mp3" preload="auto" loop></audio>
-
-<script>
+<audio id="bgMusic" src="public/sounds/background.mp3" loop preload="auto" ></audio>
+    <script>
   const bgMusic = document.getElementById('bgMusic');
-  bgMusic.volume = 0.5;
+  const muteButton = document.getElementById('muteButton');
 
-  // ✅ Start music only after first interaction (to satisfy autoplay policy)
-  let started = false;
-  const startMusic = () => {
-    if (!started) {
-      bgMusic.play().catch(err => console.log("Autoplay blocked:", err));
-      started = true;
+  let userInteracted = false;
+  let isManuallyMuted = false;
+
+  // Start music after first interaction
+  document.body.addEventListener('click', function startMusic() {
+    if (!userInteracted) {
+      userInteracted = true;
+      if (!isManuallyMuted) {
+        bgMusic.play().catch(err => console.log("Autoplay blocked:", err));
+      }
     }
-  };
-  document.body.addEventListener("click", startMusic, { once: true });
-  document.body.addEventListener("touchstart", startMusic, { once: true });
+  });
 
-  // ✅ Observe for dynamically created mute/unmute button
-  const observer = new MutationObserver(() => {
-    const buttons = document.querySelectorAll("button");
-    buttons.forEach(btn => {
-      if (btn.className.includes("bg-yellow")) {
-        if (!btn.dataset.listenerAdded) {
-          btn.addEventListener("click", () => {
-            // Toggle mute state
-            if (bgMusic.paused) {
-              bgMusic.play().catch(err => console.log("Resume failed:", err));
-            } else {
-              bgMusic.pause();
-            }
-          });
-          btn.dataset.listenerAdded = "true";
+  // Mute/unmute button
+  if (muteButton) {
+    muteButton.addEventListener('click', () => {
+      isManuallyMuted = !isManuallyMuted;
+      bgMusic.muted = isManuallyMuted;
+
+      if (isManuallyMuted) {
+        bgMusic.pause();
+      } else {
+        // Resume only if app is visible
+        if (!document.hidden) {
+          bgMusic.play().catch(err => console.log("Resume failed:", err));
         }
       }
-    });
-  });
-  observer.observe(document.body, { childList: true, subtree: true });
 
-  // ✅ Pause when minimized or Home button pressed
-  document.addEventListener("visibilitychange", () => {
+      muteButton.innerText = isManuallyMuted ? "Unmute" : "Mute";
+    });
+  }
+
+  // Pause when app is minimized or tab is hidden
+  document.addEventListener('visibilitychange', () => {
     if (document.hidden) {
       bgMusic.pause();
-    } else if (started && !bgMusic.paused) {
+    } else if (!isManuallyMuted && userInteracted) {
       bgMusic.play().catch(err => console.log("Resume failed:", err));
     }
   });
 
-  // ✅ Stop audio when page fully unloaded
-  window.addEventListener("pagehide", () => {
+  // Also pause when leaving page (for safety)
+  window.addEventListener('pagehide', () => {
     bgMusic.pause();
-    started = false;
   });
 </script>
 
