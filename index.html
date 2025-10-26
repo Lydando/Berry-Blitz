@@ -32,59 +32,73 @@
       .catch(err => console.log('Service worker not registered:', err)); }); } 
 </script>
     
-   <!-- Mute/Unmute Button -->
-    <button id="muteButton">Mute</button>
-
-    <!-- Mute/Unmute Script -->
+   <!-- Mute/Unmute Button and more of music related stuff things -->
     <script>
-      const muteButton = document.getElementById('muteButton');
+let userInteracted = false;
+let isMuted = false;
 
-      muteButton.addEventListener('click', () => {
-        if (!window.bgMusic) return; // wait until game audio is ready
+// Mute/unmute button
+const muteButton = document.getElementById('muteButton');
+muteButton.addEventListener('click', () => {
+    const music = window.bgMusic;
+    if (!music) return;
 
-        // Toggle mute
-        window.bgMusic.muted = !window.bgMusic.muted;
+    isMuted = !isMuted;
+    music.muted = isMuted;
 
-        if (window.bgMusic.muted) {
-          window.bgMusic.pause();
-        } else {
-          window.bgMusic.play().catch(err => console.log("Play failed:", err));
-        }
+    if (isMuted) {
+        music.pause();
+    } else if (userInteracted) {
+        music.play().catch(err => console.log("Play failed:", err));
+    }
 
-        muteButton.innerText = window.bgMusic.muted ? "Unmute" : "Mute";
-      });
-    </script>
+    muteButton.innerText = isMuted ? "Unmute" : "Mute";
+});
 
-    <!-- Optional: Pause music on tab hide and page leave -->
-   <script>
+// Start music after first interaction
+document.body.addEventListener('click', () => {
+    userInteracted = true;
+    if (window.bgMusic && !isMuted) {
+        window.bgMusic.play().catch(err => console.log("Autoplay blocked:", err));
+    }
+}, { once: true });
+
+// Pause/resume on tab visibility change
 document.addEventListener('visibilitychange', () => {
     const music = window.bgMusic;
     if (!music) return;
 
     if (document.hidden) {
-        // Pause immediately when tab is hidden
         if (!music.paused) music.pause();
-    } else {
-        // Resume only if not muted
-        if (!music.muted) {
-            music.play().catch(err => console.log("Resume failed:", err));
-        }
+    } else if (!isMuted && userInteracted) {
+        music.play().catch(err => console.log("Resume failed:", err));
     }
 });
 
-// Also pause when leaving the page (for safety)
+// Pause on page leave, resume on page show
 window.addEventListener('pagehide', () => {
-    if (window.bgMusic && !window.bgMusic.paused) {
-        window.bgMusic.pause();
-    }
+    if (window.bgMusic && !window.bgMusic.paused) window.bgMusic.pause();
 });
-
-// Optional: resume when coming back to the page
 window.addEventListener('pageshow', () => {
-    if (window.bgMusic && !window.bgMusic.muted) {
+    if (window.bgMusic && !isMuted && userInteracted) {
         window.bgMusic.play().catch(err => console.log("Resume failed:", err));
     }
 });
+
+// Pause when home screen is active and resume when game screen is active
+const root = document.getElementById('root');
+const observer = new MutationObserver(() => {
+    const music = window.bgMusic;
+    if (!music) return;
+
+    const gameScreen = root.querySelector('.game'); // change selector to match your game container
+    if (gameScreen) {
+        if (!isMuted && userInteracted) music.play().catch(err => console.log("Resume failed:", err));
+    } else {
+        music.pause();
+    }
+});
+observer.observe(root, { childList: true, subtree: true });
 </script>
 
   </body>
