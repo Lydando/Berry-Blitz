@@ -33,20 +33,27 @@
 </script>
     
    <!-- Mute/Unmute Button and more of music related stuff things -->
-    <script>
-// State
+<script>
 let userInteracted = false;
 let isMuted = false;
 
-// Mute/Unmute Button
 const muteButton = document.getElementById('muteButton');
 muteButton.addEventListener('click', () => {
-    const bg = window.bgMusic, hit = window.hitSound, success = window.successSound;
-    if (!bg || !hit || !success) return;
+    const bg = window.bgMusic;
+    if (!bg) return;
 
+    // Toggle mute state
     isMuted = !isMuted;
-    bg.muted = hit.muted = success.muted = isMuted;
+    bg.muted = isMuted;
 
+    // Also mute hit and success sounds from React state if available
+    const state = window.ReactState; // your React getter
+    const hit = state?.hitSound;
+    const success = state?.successSound;
+    if (hit) hit.muted = isMuted;
+    if (success) success.muted = isMuted;
+
+    // Pause/resume background music if needed
     if (isMuted) {
         if (!bg.paused) bg.pause();
     } else if (userInteracted) {
@@ -55,54 +62,7 @@ muteButton.addEventListener('click', () => {
 
     muteButton.innerText = isMuted ? "Unmute" : "Mute";
 });
-
-// Start background music after first interaction
-document.body.addEventListener('click', () => {
-    userInteracted = true;
-    const bg = window.bgMusic;
-    if (bg && !isMuted) {
-        bg.play().catch(err => console.log("Autoplay blocked:", err));
-    }
-}, { once: true });
-
-// Pause/resume on tab visibility change
-document.addEventListener('visibilitychange', () => {
-    const bg = window.bgMusic;
-    if (!bg) return;
-
-    if (document.hidden) {
-        if (!bg.paused) bg.pause();
-    } else if (!isMuted && userInteracted) {
-        bg.play().catch(err => console.log("Resume bgMusic failed:", err));
-    }
-});
-
-// Pause on page leave, resume on page show
-window.addEventListener('pagehide', () => {
-    if (window.bgMusic && !window.bgMusic.paused) window.bgMusic.pause();
-});
-window.addEventListener('pageshow', () => {
-    if (window.bgMusic && !isMuted && userInteracted) {
-        window.bgMusic.play().catch(err => console.log("Resume bgMusic failed:", err));
-    }
-});
-
-// Pause background music when home screen is active, resume when game screen is active
-const root = document.getElementById('root');
-const observer = new MutationObserver(() => {
-    const bg = window.bgMusic;
-    if (!bg) return;
-
-    // Detect game screen; replace '.game' with your actual game container selector if needed
-    const gameScreen = root.querySelector('.game');
-    if (gameScreen) {
-        if (!isMuted && userInteracted) bg.play().catch(err => console.log("Resume bgMusic failed:", err));
-    } else {
-        if (!bg.paused) bg.pause();
-    }
-});
-observer.observe(root, { childList: true, subtree: true });
 </script>
-
+    
   </body>
 </html>
