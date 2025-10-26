@@ -35,17 +35,15 @@
 
 <script>
   const bgMusic = document.getElementById('bgMusic');
+  const muteButton = document.getElementById('muteButton');
 
-  // Play on first user interaction (browser requirement)
-  document.body.addEventListener('click', function startMusic() {
-    if (bgMusic.paused) {
-      bgMusic.play().catch(err => console.log("Autoplay blocked:", err));
-    }
-    document.body.removeEventListener('click', startMusic);
+  // ✅ Start background music automatically
+  window.addEventListener('load', () => {
+    bgMusic.volume = 0.5; // moderate volume
+    bgMusic.play().catch(err => console.log("Autoplay prevented:", err));
   });
 
-  // Mute/unmute button setup
-  const muteButton = document.getElementById('muteButton');
+  // ✅ Toggle mute/unmute button
   if (muteButton) {
     muteButton.addEventListener('click', () => {
       bgMusic.muted = !bgMusic.muted;
@@ -53,17 +51,16 @@
     });
   }
 
-  // Pause music when page is hidden (e.g., pressing Home or switching apps)
+  // ✅ Pause music when user presses home / switches apps
   document.addEventListener("visibilitychange", () => {
     if (document.hidden) {
       bgMusic.pause();
-    } else if (!bgMusic.paused && !bgMusic.muted) {
-      // Optional: resume automatically when back
+    } else if (!bgMusic.muted) {
       bgMusic.play().catch(err => console.log("Resume failed:", err));
     }
   });
 
-  // Optional safeguard if the browser suspends the tab fully
+  // ✅ Stop completely when page is being unloaded (just in case)
   window.addEventListener('pagehide', () => {
     bgMusic.pause();
   });
