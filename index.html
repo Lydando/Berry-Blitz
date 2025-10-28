@@ -63,6 +63,44 @@ muteButton.addEventListener('click', () => {
     muteButton.innerText = isMuted ? "Unmute" : "Mute";
 });
 </script>
+
+    <script>
+  // Create a player object if not already defined
+  // (Replace this with your actual player variable if it already exists)
+  window.player = window.player || { x: 0, y: 0, speed: 5 };
+
+  // Track key presses
+  const keys = {};
+
+  // Key press tracking
+  window.addEventListener("keydown", (e) => {
+    keys[e.key.toLowerCase()] = true;
+  });
+  window.addEventListener("keyup", (e) => {
+    keys[e.key.toLowerCase()] = false;
+  });
+
+  // Movement loop
+  function updatePlayerMovement() {
+    const p = window.player;
+    const s = p.speed;
+
+    if (keys["w"] || keys["arrowup"]) p.y -= s;
+    if (keys["s"] || keys["arrowdown"]) p.y += s;
+    if (keys["a"] || keys["arrowleft"]) p.x -= s;
+    if (keys["d"] || keys["arrowright"]) p.x += s;
+
+    // Example: update the player’s visual position (if it’s an HTML element)
+    const playerEl = document.getElementById("player");
+    if (playerEl) {
+      playerEl.style.transform = `translate(${p.x}px, ${p.y}px)`;
+    }
+
+    requestAnimationFrame(updatePlayerMovement);
+  }
+
+  updatePlayerMovement();
+</script>
     
   </body>
 </html>
