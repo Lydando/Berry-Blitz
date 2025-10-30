@@ -49,8 +49,8 @@ generateBerries() {
   // 🌈 Rainbow spawn logic: check once per batch, not per berry
   const allowRainbow =
     !this.rainbowBerrySpawned &&
-    gameState.score >= 50 &&
-    Math.random() < 1 / 24; // 1 in 24 batches, not 1 in 5 berries
+    gameState.score >= 10 &&
+    Math.random() < 1 / 4; // 1 in 4 batches, not 1 in 4 berries
 
   let rainbowSpawnIndex = allowRainbow ? Math.floor(Math.random() * 5) : -1;
 
