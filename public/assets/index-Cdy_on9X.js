@@ -44,22 +44,9 @@ Error generating stack: `+i.message+`
             className: "flex items-center",
             children: [
               w.jsx("span", {
-                className: "rounded-full mr-2",
-                ref: (el) => {
-                  if (el) {
-                    const ctx = el.getContext("2d");
-                    const gradient = ctx.createLinearGradient(0, 0, 12, 0);
-                    gradient.addColorStop(0, "#FF0000"); // red
-                    gradient.addColorStop(0.2, "#FFA500"); // orange
-                    gradient.addColorStop(0.4, "#FFFF00"); // yellow
-                    gradient.addColorStop(0.6, "#00FF00"); // green
-                    gradient.addColorStop(0.8, "#0000FF"); // blue
-                    gradient.addColorStop(1, "#800080"); // violet
-                    ctx.fillStyle = gradient;
-                    ctx.beginPath();
-                    ctx.arc(6, 6, 6, 0, Math.PI * 2);
-                    ctx.fill();
-                  }
+                className: "w-3 h-3 rounded-full mr-2",
+                style: {
+                  background: "linear-gradient(90deg, #FF0000 0%, #FFA500 20%, #FFFF00 40%, #00FF00 60%, #0000FF 80%, #800080 100%)"
                 }
               }),
               "Rainbow: Removes 15 Obstacles (Score ≥ 50)"
