@@ -46,7 +46,7 @@ Error generating stack: `+i.message+`
               w.jsx("span", {
                 className: "w-3 h-3 rounded-full mr-2",
                 style: {
-                  background: "linear-gradient(90deg, #FF0000 0%, #FFA500 20%, #FFFF00 40%, #00FF00 60%, #0000FF 80%, #800080 100%)"
+                  background: "linear-gradient(90deg, red, orange, yellow, green, blue, violet)"
                 }
               }),
               "Rainbow: Removes 15 Obstacles (Score ≥ 50)"
