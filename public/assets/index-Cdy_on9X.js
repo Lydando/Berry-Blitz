@@ -132,22 +132,7 @@ checkBerrySpawning(){this.berries.filter(n=>!n.collected).length===0&&this.gener
                     this.ctx.fillStyle = gradient;
                     break;
             case "reverse":
-                    this.ctx.fillStyle = "#FFFFFF";
-                    this.ctx.beginPath();
-                    this.ctx.arc(r.position.x, r.position.y, r.size.x/2, 0, Math.PI*2);
-                    this.ctx.fill();
-                  
-                    // black arrow in the center
-                    this.ctx.fillStyle = "#000000";
-                    const centerX = r.position.x;
-                    const centerY = r.position.y;
-                    const arrowSize = 6;
-                    this.ctx.beginPath();
-                    this.ctx.moveTo(centerX - arrowSize/2, centerY - arrowSize/2);
-                    this.ctx.lineTo(centerX + arrowSize/2, centerY - arrowSize/2);
-                    this.ctx.lineTo(centerX, centerY - arrowSize);
-                    this.ctx.closePath();
-                    this.ctx.fill();
+                    this.ctx.fillStyle = "#00FF00"; // simple green circle
                     break;
             }this.ctx.beginPath(),this.ctx.arc(r.position.x+r.size.x/2,r.position.y+r.size.y/2,r.size.x/2,0,Math.PI*2),this.ctx.fill()}this.ctx.fillStyle=this.powerUps.freeze>0?"#666666":"#FF8800";for(const r of this.predators)this.ctx.save(),this.ctx.translate(r.position.x+r.size.x/2,r.position.y+r.size.y/2),this.ctx.rotate(r.rotation),this.ctx.beginPath(),this.ctx.moveTo(12,0),this.ctx.lineTo(-8,-8),this.ctx.lineTo(-8,8),this.ctx.closePath(),this.ctx.fill(),this.ctx.restore();const t=this.avatar.position.x+this.avatar.size.x/2,n=this.avatar.position.y+this.avatar.size.y/2;this.ctx.fillStyle=this.powerUps.invincibility>0?"#FFFF88":"#FFFFFF",this.ctx.beginPath(),this.ctx.arc(t,n,this.avatar.size.x/2,0,Math.PI*2),this.ctx.fill(),this.ctx.fillStyle=this.powerUps.speedBoost>0?"#00FFFF":"#4444FF",this.ctx.beginPath(),this.ctx.arc(t,n,this.avatar.size.x/3,0,Math.PI*2),this.ctx.fill(),// Reverse Controls Timer
 if (this.powerUps.reverseControls > 0) {
