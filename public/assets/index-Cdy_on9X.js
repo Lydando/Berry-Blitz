@@ -157,18 +157,33 @@ case "reverse": // 🟢 Reverse Controls Berry
   }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
 checkBerrySpawning(){this.berries.filter(n=>!n.collected).length===0&&this.generateBerries()}checkPredatorSpawning(){const t=Math.floor(this.berriesCollected/10)+1;this.predators.length<t&&this.spawnPredator()}checkSpeedIncrease(){const t=Math.floor(this.berriesCollected/20);if(t>this.lastSpeedIncrease){this.lastSpeedIncrease=t,this.avatar.speed=this.baseAvatarSpeed*Math.pow(1.05,t);const n=Math.pow(1.05,t);for(const r of this.predators)r.speed=this.basePredatorSpeed*n}}render(){this.ctx.fillStyle="#000000",this.ctx.fillRect(0,0,this.canvas.width,this.canvas.height),this.ctx.strokeStyle="#FF0000",this.ctx.lineWidth=this.borderWidth,this.ctx.strokeRect(this.borderWidth/2,this.gameAreaTop+this.borderWidth/2,this.canvas.width-this.borderWidth,this.canvas.height-this.gameAreaTop-this.borderWidth),this.ctx.fillStyle="#FFD700";for(const r of this.obstacles)this.ctx.fillRect(r.position.x,r.position.y,r.size.x,r.size.y);for(const r of this.berries)if(!r.collected){switch(r.type){case"red":this.ctx.fillStyle="#FF0000";break;case"blue":this.ctx.fillStyle="#0088FF";break;case"white":this.ctx.fillStyle="#FFFFFF";break;case"purple":this.ctx.fillStyle="#AA00FF";break;case"gray":this.ctx.fillStyle="#888888";break;
               case "reverse":
-                  // White circle background
-                  this.ctx.fillStyle = "#FFFFFF"; // white
+                  // White circular background
+                  this.ctx.fillStyle = "#FFFFFF";
                   this.ctx.beginPath();
-                  this.ctx.arc(berry.position.x + berry.size.x/2, berry.position.y + berry.size.y/2, berry.size.x/2, 0, Math.PI * 2);
+                  this.ctx.arc(
+                      berry.position.x + berry.size.x / 2,
+                      berry.position.y + berry.size.y / 2,
+                      berry.size.x / 2,
+                      0,
+                      Math.PI * 2
+                  );
                   this.ctx.fill();
-                  
-                  // Draw the 🌀 symbol
-                  this.ctx.fillStyle = "#000000"; // black swirl
-                  this.ctx.font = `${berry.size.x}px Arial`; // size matches berry
-                  this.ctx.textAlign = "center";
-                  this.ctx.textBaseline = "middle";
-                  this.ctx.fillText("🌀", berry.position.x + berry.size.x/2, berry.position.y + berry.size.y/2);
+              
+                  // Draw simple spiral
+                  this.ctx.strokeStyle = "#000000";
+                  this.ctx.lineWidth = 2;
+                  this.ctx.beginPath();
+                  const cx = berry.position.x + berry.size.x / 2;
+                  const cy = berry.position.y + berry.size.y / 2;
+                  const radius = berry.size.x / 3;
+              
+                  // Spiral: 4 arcs in increasing radius
+                  for (let i = 0; i < 4; i++) {
+                      const startAngle = i * Math.PI / 2;
+                      const endAngle = startAngle + Math.PI / 2;
+                      this.ctx.arc(cx, cy, radius * (i + 1) / 4, startAngle, endAngle);
+                  }
+                  this.ctx.stroke();
                   break;
 
               case "rainbow": // 🟡🟢🔵🟣🟠🌈 new rainbow berry look
@@ -186,14 +201,14 @@ checkBerrySpawning(){this.berries.filter(n=>!n.collected).length===0&&this.gener
                     break;
             }this.ctx.beginPath(),this.ctx.arc(r.position.x+r.size.x/2,r.position.y+r.size.y/2,r.size.x/2,0,Math.PI*2),this.ctx.fill()}this.ctx.fillStyle=this.powerUps.freeze>0?"#666666":"#FF8800";for(const r of this.predators)this.ctx.save(),this.ctx.translate(r.position.x+r.size.x/2,r.position.y+r.size.y/2),this.ctx.rotate(r.rotation),this.ctx.beginPath(),this.ctx.moveTo(12,0),this.ctx.lineTo(-8,-8),this.ctx.lineTo(-8,8),this.ctx.closePath(),this.ctx.fill(),this.ctx.restore();const t=this.avatar.position.x+this.avatar.size.x/2,n=this.avatar.position.y+this.avatar.size.y/2;this.ctx.fillStyle=this.powerUps.invincibility>0?"#FFFF88":"#FFFFFF",this.ctx.beginPath(),this.ctx.arc(t,n,this.avatar.size.x/2,0,Math.PI*2),this.ctx.fill(),this.ctx.fillStyle=this.powerUps.speedBoost>0?"#00FFFF":"#4444FF",this.ctx.beginPath(),this.ctx.arc(t,n,this.avatar.size.x/3,0,Math.PI*2),this.ctx.fill()}reset(){const t=this.canvas.height-this.gameAreaTop;this.avatar.position={x:this.canvas.width/2,y:this.gameAreaTop+t/2},this.avatar.speed=this.baseAvatarSpeed,this.avatar.direction={x:0,y:0},this.berries=[],this.obstacles=[],this.predators=[],this.powerUps={speedBoost:0,invincibility:0,freeze:0},this.berriesCollected=0,this.berrySpawnCount=0,this.lastSpeedIncrease=0,this.gameStartTime=Date.now(),this.currentDirection="none",this.initializeGame()}handleResize(){this.avatar.position.x=Math.min(this.avatar.position.x,this.canvas.width-this.avatar.size.x),this.avatar.position.y=Math.max(this.gameAreaTop,Math.min(this.avatar.position.y,this.canvas.height-this.avatar.size.y))}getPowerUpStatus(){return{...this.powerUps}}}
 class Zd {
-  constructor(t, kdInstance){
+  constructor(canvas, kdInstance){
     this.currentDirection = "none";
-    this.lastDirection = "none";
+    this.lastDirection = "none"; // ⚡ FIXED: added lastDirection tracking
     this.touchStartX = 0;
     this.touchStartY = 0;
     this.minSwipeDistance = 30;
     this.keysPressed = {}; // for keyboard
-    this.canvas = t;
+    this.canvas = canvas;
     this.kd = kdInstance; // reference to Kd for reverseControlsActive
     this.setupEventListeners();
   }
@@ -214,18 +229,18 @@ class Zd {
   // --- Touch / Mouse methods ---
   handleTouchStart(e) {
     e.preventDefault();
-    const n = e.touches[0];
-    this.touchStartX = n.clientX;
-    this.touchStartY = n.clientY;
+    const touch = e.touches[0];
+    this.touchStartX = touch.clientX;
+    this.touchStartY = touch.clientY;
   }
 
   handleTouchMove(e) { e.preventDefault(); }
 
   handleTouchEnd(e) {
     e.preventDefault();
-    const n = e.changedTouches[0];
-    let dx = n.clientX - this.touchStartX;
-    let dy = n.clientY - this.touchStartY;
+    const touch = e.changedTouches[0];
+    let dx = touch.clientX - this.touchStartX;
+    let dy = touch.clientY - this.touchStartY;
 
     if (Math.sqrt(dx*dx + dy*dy) > this.minSwipeDistance) {
       const absX = Math.abs(dx);
@@ -233,27 +248,39 @@ class Zd {
 
       let dir = absX > absY ? (dx > 0 ? "right" : "left") : (dy > 0 ? "down" : "up");
 
-      if(this.kd.reverseControlsActive) dir = this.invertDirection(dir);
-      this.currentDirection = dir;
+      // ⚡ FIXED: Update lastDirection
+      this.lastDirection = dir;
+
+      // ⚡ FIXED: Apply reverse based on lastDirection
+      this.currentDirection = this.kd.reverseControlsActive ? this.invertDirection(this.lastDirection) : this.lastDirection;
+
       console.log("Swipe detected:", this.currentDirection);
     }
   }
 
-  handleMouseDown(e){ this.touchStartX = e.clientX; this.touchStartY = e.clientY; }
+  handleMouseDown(e) {
+    this.touchStartX = e.clientX;
+    this.touchStartY = e.clientY;
+  }
 
-  handleMouseMove(e){ e.preventDefault(); }
+  handleMouseMove(e) { e.preventDefault(); }
 
-  handleMouseUp(e){
+  handleMouseUp(e) {
     const dx = e.clientX - this.touchStartX;
     const dy = e.clientY - this.touchStartY;
 
-    if(Math.sqrt(dx*dx + dy*dy) > this.minSwipeDistance){
+    if (Math.sqrt(dx*dx + dy*dy) > this.minSwipeDistance) {
       const absX = Math.abs(dx);
       const absY = Math.abs(dy);
 
       let dir = absX > absY ? (dx > 0 ? "right" : "left") : (dy > 0 ? "down" : "up");
-      if(this.kd.reverseControlsActive) dir = this.invertDirection(dir);
-      this.currentDirection = dir;
+
+      // ⚡ FIXED: Update lastDirection
+      this.lastDirection = dir;
+
+      // ⚡ FIXED: Apply reverse based on lastDirection
+      this.currentDirection = this.kd.reverseControlsActive ? this.invertDirection(this.lastDirection) : this.lastDirection;
+
       console.log("Mouse swipe detected:", this.currentDirection);
     }
   }
@@ -269,28 +296,37 @@ class Zd {
     this.updateDirectionFromKeys();
   }
 
- updateDirectionFromKeys() {
+  updateDirectionFromKeys() {
     let dir = "none";
 
-    // Prioritize arrow keys if multiple pressed
+    // ⚡ FIXED: Prioritize arrow keys if multiple pressed
     if(this.keysPressed["arrowup"] || this.keysPressed["w"]) dir = "up";
     else if(this.keysPressed["arrowdown"] || this.keysPressed["s"]) dir = "down";
     else if(this.keysPressed["arrowleft"] || this.keysPressed["a"]) dir = "left";
     else if(this.keysPressed["arrowright"] || this.keysPressed["d"]) dir = "right";
 
-    // Remember last non-none direction
+    // ⚡ FIXED: Update lastDirection if valid key pressed
     if(dir !== "none") this.lastDirection = dir;
 
-    // If reverse active, invert the last direction instead of the current dir
-    if(this.kd.reverseControlsActive && this.lastDirection !== "none") {
-        this.currentDirection = this.invertDirection(this.lastDirection);
-    } else {
-        this.currentDirection = dir;
+    // ⚡ FIXED: Reverse controls always applied to lastDirection
+    this.currentDirection = this.kd.reverseControlsActive ? this.invertDirection(this.lastDirection) : (dir !== "none" ? dir : this.lastDirection);
+  }
+
+  invertDirection(dir) {
+    switch(dir){
+      case "up": return "down";
+      case "down": return "up";
+      case "left": return "right";
+      case "right": return "left";
+      default: return dir;
     }
-}
+  }
 
   getDirection(){ return this.currentDirection; }
-  reset(){ this.currentDirection = "none"; this.lastDirection = "none"; }
+  reset(){ 
+    this.currentDirection = "none"; 
+    this.lastDirection = "none"; 
+  }
 }
 
 const Jd=({onGameEnd:e})=>{var k;const t=Z.useRef(null),n=Z.useRef(null),r=Z.useRef(null),l=Z.useRef(),i=Z.useRef(!1),{score:o,survivalTime:u,isGameOver:s,resetGame:c}=jr(),{updateStatistics:m}=ac(),{backgroundMusic:p,isMuted:h,toggleMute:S}=nl(),[x,y]=Z.useState(!1),[L,f]=Z.useState(!1);Z.useEffect(()=>{const C=t.current;if(!C)return;const _=new Kd(C);n.current=_;const P=new Zd(C);return r.current=P,console.log("Game initialized"),()=>{l.current&&cancelAnimationFrame(l.current)}},[]),Z.useEffect(()=>{i.current=x,p&&!h&&!x&&!s?p.play().catch(console.log):p&&p.pause()},[p,h,x,s]),Z.useEffect(()=>{s&&!L&&(f(!0),m(o,u),p&&(p.pause(),p.currentTime=0))},[s,L,o,u,m,p]),Z.useEffect(()=>{if(!n.current||!r.current)return;let C=performance.now();const _=P=>{const U=Math.min(P-C,100);if(C=P,!i.current&&!s&&n.current&&r.current){const M=r.current.getDirection();n.current.update(U,M),n.current.render()}s||(l.current=requestAnimationFrame(_))};return l.current=requestAnimationFrame(_),()=>{l.current&&cancelAnimationFrame(l.current)}},[s]);const a=()=>{f(!1),c(),n.current&&n.current.reset(),p&&!h&&(p.currentTime=0,p.play().catch(console.log))},d=()=>{y(!x)},v=()=>{p&&(p.pause(),p.currentTime=0),e()};return w.jsxs("div",{className:"w-full h-full relative bg-black",children:[w.jsx(sc,{ref:t,gameEngine:n.current}),w.jsx(Bd,{score:o,survivalTime:u,isGameOver:L,isPaused:x,isMuted:h,onRestart:a,onPause:d,onMute:S,onQuit:v,powerUps:((k=n.current)==null?void 0:k.getPowerUpStatus())||{speedBoost:0,invincibility:0,freeze:0}})]})},qd=({onBack:e})=>{const{highScore:t,bestTime:n,gamesPlayed:r,totalScore:l}=ac(),i=r>0?Math.round(l/r):0,o=u=>{const s=Math.floor(u/60),c=u%60;return`${s}:${c.toString().padStart(2,"0")}`};return w.jsxs("div",{className:"w-full h-full flex flex-col items-center justify-center bg-black text-white px-4",children:[w.jsx("div",{className:"text-center mb-8",children:w.jsx("h1",{className:"text-4xl font-bold text-green-400 mb-4",children:"STATISTICS"})}),w.jsxs("div",{className:"flex flex-col gap-6 w-full max-w-sm text-center",children:[w.jsxs("div",{children:[w.jsx("div",{className:"text-4xl font-bold text-cyan-400 mb-1",children:t}),w.jsx("div",{className:"text-gray-300 text-lg",children:"HIGH SCORE"})]}),w.jsxs("div",{children:[w.jsx("div",{className:"text-4xl font-bold text-cyan-400 mb-1",children:o(n)}),w.jsx("div",{className:"text-gray-300 text-lg",children:"BEST TIME"})]}),w.jsxs("div",{children:[w.jsx("div",{className:"text-4xl font-bold text-cyan-400 mb-1",children:r}),w.jsx("div",{className:"text-gray-300 text-lg",children:"GAMES PLAYED"})]}),w.jsxs("div",{children:[w.jsx("div",{className:"text-4xl font-bold text-cyan-400 mb-1",children:i}),w.jsx("div",{className:"text-gray-300 text-lg",children:"AVG SCORE"})]})]}),w.jsx("div",{className:"mt-8 w-full max-w-sm",children:w.jsx("button",{onClick:e,className:"w-full bg-gray-600 hover:bg-gray-500 text-white font-bold py-4 px-8 rounded-lg text-xl transition-colors duration-200 border-2 border-gray-400",children:"EXIT STATISTICS"})})]})};function bd(){const[e,t]=Z.useState("home"),{setBackgroundMusic:n,setHitSound:r,setSuccessSound:l}=nl();Z.useEffect(()=>{const u=new Audio("Betterbackground.mp3"),s=new Audio("Betterhit.mp3"),c=new Audio("Bettersuccess.mp3");u.loop=!0,u.volume=.3,n(u),r(s),l(c)},[n,r,l]);const i=u=>{t(u)},o=()=>{t("home")};return w.jsxs("div",{className:"w-full h-full bg-black overflow-hidden",children:[e==="home"&&w.jsx(Ud,{onStartGame:()=>i("game"),onShowStatistics:()=>i("statistics")}),e==="game"&&w.jsx(Jd,{onGameEnd:o}),e==="statistics"&&w.jsx(qd,{onBack:()=>i("home")})]})}uc(document.getElementById("root")).render(w.jsx(bd,{}));
