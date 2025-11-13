@@ -69,7 +69,7 @@ generateBerries() {
 
   let rainbowSpawnIndex = allowRainbow ? Math.floor(Math.random() * 5) : -1;
 
-  const spawnReverse = Math.random() < 1 / 15;
+  const spawnReverse = Math.random() < 1 / 3;
   const reverseSpawnIndex = spawnReverse ? Math.floor(Math.random() * 5) : -1;
 
   for (let r = 0; r < 5; r++) {
