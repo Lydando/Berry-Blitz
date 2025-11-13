@@ -157,9 +157,20 @@ case "reverse": // 🟢 Reverse Controls Berry
   }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
 checkBerrySpawning(){this.berries.filter(n=>!n.collected).length===0&&this.generateBerries()}checkPredatorSpawning(){const t=Math.floor(this.berriesCollected/10)+1;this.predators.length<t&&this.spawnPredator()}checkSpeedIncrease(){const t=Math.floor(this.berriesCollected/20);if(t>this.lastSpeedIncrease){this.lastSpeedIncrease=t,this.avatar.speed=this.baseAvatarSpeed*Math.pow(1.05,t);const n=Math.pow(1.05,t);for(const r of this.predators)r.speed=this.basePredatorSpeed*n}}render(){this.ctx.fillStyle="#000000",this.ctx.fillRect(0,0,this.canvas.width,this.canvas.height),this.ctx.strokeStyle="#FF0000",this.ctx.lineWidth=this.borderWidth,this.ctx.strokeRect(this.borderWidth/2,this.gameAreaTop+this.borderWidth/2,this.canvas.width-this.borderWidth,this.canvas.height-this.gameAreaTop-this.borderWidth),this.ctx.fillStyle="#FFD700";for(const r of this.obstacles)this.ctx.fillRect(r.position.x,r.position.y,r.size.x,r.size.y);for(const r of this.berries)if(!r.collected){switch(r.type){case"red":this.ctx.fillStyle="#FF0000";break;case"blue":this.ctx.fillStyle="#0088FF";break;case"white":this.ctx.fillStyle="#FFFFFF";break;case"purple":this.ctx.fillStyle="#AA00FF";break;case"gray":this.ctx.fillStyle="#888888";break;
               case "reverse":
-                    // green Reverse Controls Berry
-                    this.ctx.fillStyle = "#00CC00";
-                    break;
+                  // White circle background
+                  this.ctx.fillStyle = "#FFFFFF"; // white
+                  this.ctx.beginPath();
+                  this.ctx.arc(berry.position.x + berry.size.x/2, berry.position.y + berry.size.y/2, berry.size.x/2, 0, Math.PI * 2);
+                  this.ctx.fill();
+                  
+                  // Draw the 🌀 symbol
+                  this.ctx.fillStyle = "#000000"; // black swirl
+                  this.ctx.font = `${berry.size.x}px Arial`; // size matches berry
+                  this.ctx.textAlign = "center";
+                  this.ctx.textBaseline = "middle";
+                  this.ctx.fillText("🌀", berry.position.x + berry.size.x/2, berry.position.y + berry.size.y/2);
+                  break;
+
               case "rainbow": // 🟡🟢🔵🟣🟠🌈 new rainbow berry look
                     const gradient = this.ctx.createLinearGradient(
                         r.position.x, r.position.y,
@@ -258,8 +269,8 @@ class Zd {
     this.updateDirectionFromKeys();
   }
 
-  updateDirectionFromKeys() {
-    let dir = this.currentDirection;
+ updateDirectionFromKeys() {
+    let dir = "none";
 
     // Prioritize arrow keys if multiple pressed
     if(this.keysPressed["arrowup"] || this.keysPressed["w"]) dir = "up";
@@ -267,19 +278,16 @@ class Zd {
     else if(this.keysPressed["arrowleft"] || this.keysPressed["a"]) dir = "left";
     else if(this.keysPressed["arrowright"] || this.keysPressed["d"]) dir = "right";
 
-    if(this.kd.reverseControlsActive && dir !== "none") dir = this.invertDirection(dir);
-    this.currentDirection = dir;
-  }
+    // Remember last non-none direction
+    if(dir !== "none") this.lastDirection = dir;
 
-  invertDirection(dir) {
-    switch(dir){
-      case "up": return "down";
-      case "down": return "up";
-      case "left": return "right";
-      case "right": return "left";
-      default: return dir;
+    // If reverse active, invert the last direction instead of the current dir
+    if(this.kd.reverseControlsActive && this.lastDirection !== "none") {
+        this.currentDirection = this.invertDirection(this.lastDirection);
+    } else {
+        this.currentDirection = dir;
     }
-  }
+}
 
   getDirection(){ return this.currentDirection; }
   reset(){ this.currentDirection = "none"; this.lastDirection = "none"; }
