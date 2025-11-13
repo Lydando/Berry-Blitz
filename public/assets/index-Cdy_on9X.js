@@ -69,6 +69,9 @@ generateBerries() {
 
   let rainbowSpawnIndex = allowRainbow ? Math.floor(Math.random() * 5) : -1;
 
+  const spawnReverse = Math.random() < 1 / 15;
+  const reverseSpawnIndex = spawnReverse ? Math.floor(Math.random() * 5) : -1;
+
   for (let r = 0; r < 5; r++) {
     let l, i = 0;
     const o = 100;
@@ -89,7 +92,10 @@ generateBerries() {
     if (r === rainbowSpawnIndex) {
       u = "rainbow";
       this.rainbowBerrySpawned = true;
-    } else {
+    } else if (r === reverseSpawnIndex) {
+      u = "reverse";
+    } 
+    else {
       u = types[Math.floor(Math.random() * types.length)];
     }
 
@@ -115,6 +121,10 @@ removeRandomObstacles(count) {
   }
 }
 checkBerrySpawning(){this.berries.filter(n=>!n.collected).length===0&&this.generateBerries()}checkPredatorSpawning(){const t=Math.floor(this.berriesCollected/10)+1;this.predators.length<t&&this.spawnPredator()}checkSpeedIncrease(){const t=Math.floor(this.berriesCollected/20);if(t>this.lastSpeedIncrease){this.lastSpeedIncrease=t,this.avatar.speed=this.baseAvatarSpeed*Math.pow(1.05,t);const n=Math.pow(1.05,t);for(const r of this.predators)r.speed=this.basePredatorSpeed*n}}render(){this.ctx.fillStyle="#000000",this.ctx.fillRect(0,0,this.canvas.width,this.canvas.height),this.ctx.strokeStyle="#FF0000",this.ctx.lineWidth=this.borderWidth,this.ctx.strokeRect(this.borderWidth/2,this.gameAreaTop+this.borderWidth/2,this.canvas.width-this.borderWidth,this.canvas.height-this.gameAreaTop-this.borderWidth),this.ctx.fillStyle="#FFD700";for(const r of this.obstacles)this.ctx.fillRect(r.position.x,r.position.y,r.size.x,r.size.y);for(const r of this.berries)if(!r.collected){switch(r.type){case"red":this.ctx.fillStyle="#FF0000";break;case"blue":this.ctx.fillStyle="#0088FF";break;case"white":this.ctx.fillStyle="#FFFFFF";break;case"purple":this.ctx.fillStyle="#AA00FF";break;case"gray":this.ctx.fillStyle="#888888";break;
+              case "reverse":
+                    // green Reverse Controls Berry
+                    this.ctx.fillStyle = "#00CC00";
+                    break;
               case "rainbow": // 🟡🟢🔵🟣🟠🌈 new rainbow berry look
                     const gradient = this.ctx.createLinearGradient(
                         r.position.x, r.position.y,
