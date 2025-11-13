@@ -112,7 +112,7 @@ case "rainbow":
   t.incrementScore();
   this.removeRandomObstacles(10);
   break;
-case "green": // 🟢 Reverse Controls Berry
+case "reverse": // 🟢 Reverse Controls Berry
     t.incrementScore(); // ✅ increase score like normal
     this.activateReverseControls(); // trigger reverse
     break;
