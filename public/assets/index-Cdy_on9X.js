@@ -115,35 +115,22 @@ generateBerries() {
   }
 }
 spawnInitialPredator(){this.spawnPredator()}spawnPredator(){let t,n=0;const r=100,l=60,i=this.canvas.height-this.gameAreaTop;do t={x:Math.random()*(this.canvas.width-30)+15,y:this.gameAreaTop+Math.random()*(i-30)+15},n++;while(n<r&&this.getDistance(t,this.avatar.position)<l);const o=4+Math.floor(Math.random()*3),u=[{...t}];for(let c=0;c<o;c++){const m={x:30+Math.random()*(this.canvas.width-60),y:this.gameAreaTop+30+Math.random()*(i-60)};u.push(m)}u.push({...t});const s=this.basePredatorSpeed*(1+Math.min(.6,Math.floor(this.berriesCollected/5)*.05));this.predators.push({position:t,size:{x:28,y:28},speed:s,patrolPath:u,currentWaypointIndex:0,rotation:0})}isPositionBlocked(t,n){for(const r of this.obstacles)if(this.checkCollision({position:t,size:{x:n*2,y:n*2}},r))return!0;return!1}getDistance(t,n){const r=t.x-n.x,l=t.y-n.y;return Math.sqrt(r*r+l*l)}checkCollision(t,n){return t.position.x<n.position.x+n.size.x&&t.position.x+t.size.x>n.position.x&&t.position.y<n.position.y+n.size.y&&t.position.y+t.size.y>n.position.y}
-loop(timestamp) {
-        if (!this.lastTimestamp) {
-            this.lastTimestamp = timestamp; // first frame fix
-        }
+update(t, n) {
+    this.lastUpdate = Date.now();
+    const r = t / 1000; // delta in seconds
 
-        const delta = (timestamp - this.lastTimestamp) / 1000;
-        this.lastTimestamp = timestamp;
+    // Use direction from Zd
+    const direction = this.zd.getDirection();
+    this.moveAvatar(direction, r);
 
-        this.update(delta);
-        this.render();
-
-        requestAnimationFrame((t) => this.loop(t));
-    }
-
-    // 🔵 Your update — DO NOT CHANGE ANYTHING HERE
-    update(t, n) {
-        this.lastUpdate = Date.now();
-        const r = t / 1000; // delta in seconds
-
-        const direction = this.zd.getDirection();
-        this.moveAvatar(direction, r);
-
-        jr.getState().updateSurvivalTime();
-        this.updatePowerUps(t);
-        this.updatePredators(r);
-        this.checkCollisions();
-        this.checkBerrySpawning();
-        this.checkPredatorSpawning();
-        this.checkSpeedIncrease();
+    // Rest of the update logic
+    jr.getState().updateSurvivalTime();
+    this.updatePowerUps(t);
+    this.updatePredators(r);
+    this.checkCollisions();
+    this.checkBerrySpawning();
+    this.checkPredatorSpawning();
+    this.checkSpeedIncrease();
 }
 updatePowerUps(t){this.powerUps.speedBoost=Math.max(0,this.powerUps.speedBoost-t),this.powerUps.invincibility=Math.max(0,this.powerUps.invincibility-t),this.powerUps.freeze=Math.max(0,this.powerUps.freeze-t)}moveAvatar(t,n){if(t==="none")return;const l=this.avatar.speed*(this.powerUps.speedBoost>0?1.2:1)*n;let i={...this.avatar.position};switch(t){case"up":i.y-=l,this.avatar.direction={x:0,y:-1};break;case"down":i.y+=l,this.avatar.direction={x:0,y:1};break;case"left":i.x-=l,this.avatar.direction={x:-1,y:0};break;case"right":i.x+=l,this.avatar.direction={x:1,y:0};break}if(i.x=Math.max(0,Math.min(this.canvas.width-this.avatar.size.x,i.x)),i.y=Math.max(this.gameAreaTop,Math.min(this.canvas.height-this.avatar.size.y,i.y)),this.powerUps.invincibility<=0){const o={...this.avatar,position:i};let u=!1;for(const s of this.obstacles)if(this.checkCollision(o,s)){u=!0,nl.getState().playHit(),jr.getState().endGame();return}u||(this.avatar.position=i)}else this.avatar.position=i}updatePredators(t){if(!(this.powerUps.freeze>0))for(const n of this.predators){const r=n.patrolPath[n.currentWaypointIndex],l=r.x-n.position.x,i=r.y-n.position.y,o=Math.sqrt(l*l+i*i);if(o<5)n.currentWaypointIndex=(n.currentWaypointIndex+1)%n.patrolPath.length;else{const u=l/o,s=i/o;n.position.x+=u*n.speed*t,n.position.y+=s*n.speed*t,n.rotation=Math.atan2(s,u)}}}checkCollisions(){const t=jr.getState(),n=nl.getState();for(const r of this.berries)if(!r.collected&&this.checkCollision(this.avatar,r))switch(r.collected=!0,this.berriesCollected++,this.berrySpawnCount++,n.playSuccess(),r.type){case"red":t.incrementScore();break;case"blue":t.incrementScore(),this.powerUps.speedBoost=1e4;break;case"white":t.incrementScore(),this.powerUps.invincibility=7e3;break;case"purple":t.incrementScore(),this.powerUps.freeze=5e3;break;case"gray":t.incrementScore(),setTimeout(()=>{this.addObstacles(2)},100);break;
 case "rainbow":  
@@ -165,25 +152,19 @@ case "reverse": // 🟢 Reverse Controls Berry
     }
   }
   activateReverseControls() {
-    this.reverseControlsActive = true;
-
-    // Store the score at activation
-    this.reverseStartScore = this.berriesCollected;
-
-    console.log("🌀 Reverse controls activated until +5 points!");
-
-    // Remove any old timer (we no longer use time-based deactivation)
-    if (this.reverseTimeout) {
+    // If already active, clear the old timer to restart the 10s duration
+    if (this.reverseControlsActive && this.reverseTimeout) {
         clearTimeout(this.reverseTimeout);
-        this.reverseTimeout = null;
     }
-}
 
-// --- Inside your update() or berry collision handling ---
-// Add this check AFTER berriesCollected has been updated
-if (this.reverseControlsActive && this.berriesCollected >= this.reverseStartScore + 5) {
-    this.reverseControlsActive = false;
-    console.log("🌀 Reverse controls deactivated!");
+    this.reverseControlsActive = true;
+    console.log("🌀 Reverse controls activated!");
+
+    // Store the timeout so we can cancel it on death
+    this.reverseTimeout = setTimeout(() => {
+        this.reverseControlsActive = false;
+        console.log("✅ Reverse controls ended.");
+    }, 10000);
 }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
 checkBerrySpawning(){this.berries.filter(n=>!n.collected).length===0&&this.generateBerries()}checkPredatorSpawning(){const t=Math.floor(this.berriesCollected/10)+1;this.predators.length<t&&this.spawnPredator()}checkSpeedIncrease(){const t=Math.floor(this.berriesCollected/20);if(t>this.lastSpeedIncrease){this.lastSpeedIncrease=t,this.avatar.speed=this.baseAvatarSpeed*Math.pow(1.05,t);const n=Math.pow(1.05,t);for(const r of this.predators)r.speed=this.basePredatorSpeed*n}}render(){this.ctx.fillStyle="#000000",this.ctx.fillRect(0,0,this.canvas.width,this.canvas.height),this.ctx.strokeStyle="#FF0000",this.ctx.lineWidth=this.borderWidth,this.ctx.strokeRect(this.borderWidth/2,this.gameAreaTop+this.borderWidth/2,this.canvas.width-this.borderWidth,this.canvas.height-this.gameAreaTop-this.borderWidth),this.ctx.fillStyle="#FFD700";for(const r of this.obstacles)this.ctx.fillRect(r.position.x,r.position.y,r.size.x,r.size.y);for(const r of this.berries)if(!r.collected){switch(r.type){case"red":this.ctx.fillStyle="#FF0000";break;case"blue":this.ctx.fillStyle="#0088FF";break;case"white":this.ctx.fillStyle="#FFFFFF";break;case"purple":this.ctx.fillStyle="#AA00FF";break;case"gray":this.ctx.fillStyle="#888888";break;
               case "reverse":
