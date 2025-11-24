@@ -116,17 +116,28 @@ generateBerries() {
 }
 spawnInitialPredator(){this.spawnPredator()}spawnPredator(){let t,n=0;const r=100,l=60,i=this.canvas.height-this.gameAreaTop;do t={x:Math.random()*(this.canvas.width-30)+15,y:this.gameAreaTop+Math.random()*(i-30)+15},n++;while(n<r&&this.getDistance(t,this.avatar.position)<l);const o=4+Math.floor(Math.random()*3),u=[{...t}];for(let c=0;c<o;c++){const m={x:30+Math.random()*(this.canvas.width-60),y:this.gameAreaTop+30+Math.random()*(i-60)};u.push(m)}u.push({...t});const s=this.basePredatorSpeed*(1+Math.min(.6,Math.floor(this.berriesCollected/5)*.05));this.predators.push({position:t,size:{x:28,y:28},speed:s,patrolPath:u,currentWaypointIndex:0,rotation:0})}isPositionBlocked(t,n){for(const r of this.obstacles)if(this.checkCollision({position:t,size:{x:n*2,y:n*2}},r))return!0;return!1}getDistance(t,n){const r=t.x-n.x,l=t.y-n.y;return Math.sqrt(r*r+l*l)}checkCollision(t,n){return t.position.x<n.position.x+n.size.x&&t.position.x+t.size.x>n.position.x&&t.position.y<n.position.y+n.size.y&&t.position.y+t.size.y>n.position.y}
 update(t, n) {
-    this.lastUpdate = Date.now();
-    const r = t / 1000; // delta in seconds
+    // 🔥 Initialize lastUpdate only ONCE (fixes first match freeze)
+    if (this.lastUpdate === undefined || this.lastUpdate === null) {
+        this.lastUpdate = t;
+    }
 
-    // Use direction from Zd
+    // 🔥 Correct delta time
+    const dt = t - this.lastUpdate;
+    this.lastUpdate = t;
+
+    // 🔥 Convert to seconds because your movement/predators use seconds
+    const r = dt / 1000;
+
+    // --- Game Logic ---
+
+    // Use direction from Zd (reverse controls handled elsewhere)
     const direction = this.zd.getDirection();
     this.moveAvatar(direction, r);
 
-    // Rest of the update logic
-    jr.getState().updateSurvivalTime();
-    this.updatePowerUps(t);
-    this.updatePredators(r);
+    // Normal updates
+    jr.getState().updateSurvivalTime(dt);  // If this expects ms, pass dt. If seconds, pass r.
+    this.updatePowerUps(dt);               // Power-up timers decrease correctly now
+    this.updatePredators(r);               // Predators move correctly
     this.checkCollisions();
     this.checkBerrySpawning();
     this.checkPredatorSpawning();
