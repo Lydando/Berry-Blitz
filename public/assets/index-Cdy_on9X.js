@@ -116,28 +116,57 @@ generateBerries() {
 }
 spawnInitialPredator(){this.spawnPredator()}spawnPredator(){let t,n=0;const r=100,l=60,i=this.canvas.height-this.gameAreaTop;do t={x:Math.random()*(this.canvas.width-30)+15,y:this.gameAreaTop+Math.random()*(i-30)+15},n++;while(n<r&&this.getDistance(t,this.avatar.position)<l);const o=4+Math.floor(Math.random()*3),u=[{...t}];for(let c=0;c<o;c++){const m={x:30+Math.random()*(this.canvas.width-60),y:this.gameAreaTop+30+Math.random()*(i-60)};u.push(m)}u.push({...t});const s=this.basePredatorSpeed*(1+Math.min(.6,Math.floor(this.berriesCollected/5)*.05));this.predators.push({position:t,size:{x:28,y:28},speed:s,patrolPath:u,currentWaypointIndex:0,rotation:0})}isPositionBlocked(t,n){for(const r of this.obstacles)if(this.checkCollision({position:t,size:{x:n*2,y:n*2}},r))return!0;return!1}getDistance(t,n){const r=t.x-n.x,l=t.y-n.y;return Math.sqrt(r*r+l*l)}checkCollision(t,n){return t.position.x<n.position.x+n.size.x&&t.position.x+t.size.x>n.position.x&&t.position.y<n.position.y+n.size.y&&t.position.y+t.size.y>n.position.y}
 update(t, n) {
-    // 🔥 Initialize lastUpdate only ONCE (fixes first match freeze)
-    if (this.lastUpdate === undefined || this.lastUpdate === null) {
+    // Make function robust: allow being called either with:
+    //  - a high-resolution timestamp (from requestAnimationFrame)
+    //  - OR a small delta in milliseconds (if some code calls update(dt))
+    //
+    // We decide by value: rAF timestamps are typically > 1000 (ms since navigation start).
+    // Small deltas (16, 33, etc.) will be < 1000.
+
+    // If t is not a number, fallback to performance.now()
+    if (typeof t !== "number") t = performance.now();
+
+    let dt; // milliseconds
+    if (t > 1000) {
+        // Caller provided a timestamp (rAF style)
+        if (this.lastUpdate === undefined || this.lastUpdate === null) {
+            this.lastUpdate = t;
+        }
+        dt = t - this.lastUpdate;
         this.lastUpdate = t;
+    } else {
+        // Caller provided a small delta in ms (or an odd small timestamp).
+        // Treat t as dt directly.
+        dt = t;
+        // Do NOT modify lastUpdate in this branch because there's no rAF timestamp to compare.
+        // But if lastUpdate is unset, set it for future rAF-style calls (use current time).
+        if (this.lastUpdate === undefined || this.lastUpdate === null) {
+            this.lastUpdate = performance.now();
+        }
     }
 
-    // 🔥 Correct delta time
-    const dt = t - this.lastUpdate;
-    this.lastUpdate = t;
+    // Clamp dt to avoid crazy large first-frame jumps
+    if (dt > 1000) dt = 1000; // at most 1 second per frame
+    if (dt < 0) dt = 0;
 
-    // 🔥 Convert to seconds because your movement/predators use seconds
-    const r = dt / 1000;
+    const seconds = dt / 1000; // for systems that use seconds
 
     // --- Game Logic ---
 
     // Use direction from Zd (reverse controls handled elsewhere)
     const direction = this.zd.getDirection();
-    this.moveAvatar(direction, r);
+    this.moveAvatar(direction, seconds);
 
-    // Normal updates
-    jr.getState().updateSurvivalTime(dt);  // If this expects ms, pass dt. If seconds, pass r.
-    this.updatePowerUps(dt);               // Power-up timers decrease correctly now
-    this.updatePredators(r);               // Predators move correctly
+    // Update survival/time-based systems:
+    // Note: updateSurvivalTime expects milliseconds in your code earlier; pass dt.
+    if (typeof jr !== "undefined" && jr.getState) {
+        // If your updateSurvivalTime expects seconds, pass `seconds` instead.
+        // From your earlier code it expected ms, so we pass dt.
+        try { jr.getState().updateSurvivalTime(dt); } catch(e) {}
+    }
+
+    this.updatePowerUps(dt);    // expects milliseconds
+    this.updatePredators(seconds); // expects seconds
     this.checkCollisions();
     this.checkBerrySpawning();
     this.checkPredatorSpawning();
