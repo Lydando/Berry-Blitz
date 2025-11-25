@@ -282,12 +282,12 @@ checkBerrySpawning(){this.berries.filter(n=>!n.collected).length===0&&this.gener
       
               // Swirl emoji centered
               this.ctx.fillStyle = "#00CC66"; // optional: green text
-              this.ctx.font = `${r.size.x * 0.7}px sans-serif`; // scale emoji
+              this.ctx.font = `${r.size.x * 1}px sans-serif`; // scale emoji
               this.ctx.textAlign = "center";
               this.ctx.textBaseline = "middle";
               this.ctx.fillText("🌀",
-                  r.position.x + r.size.x / 2,
-                  r.position.y + r.size.y / 2
+                  r.position.x + r.size.x * 0.1,
+                  r.position.y + r.size.y * 0.8
               );
               break;
       
