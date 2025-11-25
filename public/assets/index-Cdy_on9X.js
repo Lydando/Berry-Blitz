@@ -284,7 +284,7 @@ checkBerrySpawning(){this.berries.filter(n=>!n.collected).length===0&&this.gener
       
           case "reverse":
              // draw the white circle
-              this.ctx.fillStyle = "white";
+              this.ctx.fillStyle = "#FFF176";
               this.ctx.beginPath();
               this.ctx.arc(
                   r.position.x + r.size.x / 2,
