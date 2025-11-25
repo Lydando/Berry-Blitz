@@ -53,7 +53,7 @@ Error generating stack: `+i.message+`
             ]
           })
         }),
-        w.jsx("div",{className:"flex items-center justify-between",children:w.jsxs("span",{className:"flex items-center",children:[w.jsx("span",{className:"w-3 h-3 bg-[#7ED4AD] rounded-full mr-2"}),"Reverse: Reverse controls until 5 berries eaten"]})})           
+        w.jsx("div", {className: "flex items-center justify-between",children: w.jsxs("span", {className: "flex items-center",children: [w.jsx("span", {className: "w-3 h-3 rounded-full mr-2",style: { backgroundColor: "#7ED4AD" }}),"Reverse: Reverse controls until 5 berries eaten"]})})           
  ]})]})
   ,w.jsx("div",{className:"text-center mt-20 mb-10",children:w.jsx("a",{href:"https://lydando.github.io/BerryBlitz-Download/",className:"text-cyan-400 hover:text-cyan-400 underline text-lg",children:"Download Berry Blitz"})}) 
 ]}),sc=Z.forwardRef(({gameEngine:e},t)=>(Z.useEffect(()=>{const n=t;if(!n.current)return;
