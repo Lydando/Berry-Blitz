@@ -58,9 +58,24 @@ Error generating stack: `+i.message+`
   children: w.jsxs("span", {
     className: "flex items-center",
     children: [
-      w.jsx("span", {
-        className: "mr-2 text-lg",
-        children: "🌀"
+      w.jsxs("span", {
+        className: "mr-2 flex items-center justify-center",
+        children: [
+          w.jsx("span", {
+            className: "w-5 h-5 rounded-full flex items-center justify-center",
+            style: { backgroundColor: "#FFF176" },
+            children: w.jsx("span", {
+              style: {
+                fontSize: "14px",
+                lineHeight: "1",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center"
+              },
+              children: "🌀"
+            })
+          })
+        ]
       }),
       "Reverse: Reverse controls until 5 berries eaten"
     ]
@@ -111,7 +126,7 @@ generateBerries() {
 
   let rainbowSpawnIndex = allowRainbow ? Math.floor(Math.random() * 5) : -1;
 
-  const spawnReverse = Math.random() < 1 / 8;
+  const spawnReverse = Math.random() < 1 / 6;
   const reverseSpawnIndex = spawnReverse ? Math.floor(Math.random() * 5) : -1;
 
   for (let r = 0; r < 5; r++) {
