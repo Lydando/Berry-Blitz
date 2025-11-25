@@ -63,7 +63,7 @@ Error generating stack: `+i.message+`
         children: [
           w.jsx("span", {
             className: "w-5 h-5 rounded-full flex items-center justify-center",
-            style: { backgroundColor: "#FFF176" },
+            style: { backgroundColor: "#C8E6C9" },
             children: w.jsx("span", {
               style: {
                 fontSize: "14px",
@@ -284,7 +284,7 @@ checkBerrySpawning(){this.berries.filter(n=>!n.collected).length===0&&this.gener
       
           case "reverse":
              // draw the white circle
-              this.ctx.fillStyle = "#FFF176";
+              this.ctx.fillStyle = "#C8E6C9";
               this.ctx.beginPath();
               this.ctx.arc(
                   r.position.x + r.size.x / 2,
