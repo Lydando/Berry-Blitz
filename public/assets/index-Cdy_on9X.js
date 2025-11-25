@@ -268,7 +268,7 @@ checkBerrySpawning(){this.berries.filter(n=>!n.collected).length===0&&this.gener
               break;
       
           case "reverse":
-              // White circle base
+             // draw the white circle
               this.ctx.fillStyle = "white";
               this.ctx.beginPath();
               this.ctx.arc(
@@ -279,16 +279,17 @@ checkBerrySpawning(){this.berries.filter(n=>!n.collected).length===0&&this.gener
                   Math.PI * 2
               );
               this.ctx.fill();
-      
-              // Swirl emoji centered
-              this.ctx.fillStyle = "#00CC66"; // optional: green text
-              this.ctx.font = `${r.size.x * 1}px sans-serif`; // scale emoji
+              
+              // draw centered spiral
+              this.ctx.font = `${r.size.x * 0.9}px sans-serif`;
               this.ctx.textAlign = "center";
               this.ctx.textBaseline = "middle";
-              this.ctx.fillText("🌀",
-                  r.position.x + r.size.x * 0.1,
-                  r.position.y + r.size.y * 0.8
+              this.ctx.fillText(
+                  "🌀",
+                  r.position.x + r.size.x / 2,
+                  r.position.y + r.size.y / 2
               );
+
               break;
       
           case "rainbow":
