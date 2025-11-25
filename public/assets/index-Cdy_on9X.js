@@ -197,25 +197,73 @@ case "reverse": // 🟢 Reverse Controls Berry
   }
 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
-checkBerrySpawning(){this.berries.filter(n=>!n.collected).length===0&&this.generateBerries()}checkPredatorSpawning(){const t=Math.floor(this.berriesCollected/10)+1;this.predators.length<t&&this.spawnPredator()}checkSpeedIncrease(){const t=Math.floor(this.berriesCollected/20);if(t>this.lastSpeedIncrease){this.lastSpeedIncrease=t,this.avatar.speed=this.baseAvatarSpeed*Math.pow(1.05,t);const n=Math.pow(1.05,t);for(const r of this.predators)r.speed=this.basePredatorSpeed*n}}render(){this.ctx.fillStyle="#000000",this.ctx.fillRect(0,0,this.canvas.width,this.canvas.height),this.ctx.strokeStyle="#FF0000",this.ctx.lineWidth=this.borderWidth,this.ctx.strokeRect(this.borderWidth/2,this.gameAreaTop+this.borderWidth/2,this.canvas.width-this.borderWidth,this.canvas.height-this.gameAreaTop-this.borderWidth),this.ctx.fillStyle="#FFD700";for(const r of this.obstacles)this.ctx.fillRect(r.position.x,r.position.y,r.size.x,r.size.y);for(const r of this.berries)if(!r.collected){switch(r.type){case"red":this.ctx.fillStyle="#FF0000";break;case"blue":this.ctx.fillStyle="#0088FF";break;case"white":this.ctx.fillStyle="#FFFFFF";break;case"purple":this.ctx.fillStyle="#AA00FF";break;case"gray":this.ctx.fillStyle="#888888";break;
-              case "reverse":
-                    this.ctx.fillStyle = "#7ED4AD"; // solid green
-                    break;
+checkBerrySpawning(){this.berries.filter(n=>!n.collected).length===0&&this.generateBerries()}checkPredatorSpawning(){const t=Math.floor(this.berriesCollected/10)+1;this.predators.length<t&&this.spawnPredator()}checkSpeedIncrease(){const t=Math.floor(this.berriesCollected/20);if(t>this.lastSpeedIncrease){this.lastSpeedIncrease=t,this.avatar.speed=this.baseAvatarSpeed*Math.pow(1.05,t);const n=Math.pow(1.05,t);for(const r of this.predators)r.speed=this.basePredatorSpeed*n}}render(){this.ctx.fillStyle="#000000",this.ctx.fillRect(0,0,this.canvas.width,this.canvas.height),this.ctx.strokeStyle="#FF0000",this.ctx.lineWidth=this.borderWidth,this.ctx.strokeRect(this.borderWidth/2,this.gameAreaTop+this.borderWidth/2,this.canvas.width-this.borderWidth,this.canvas.height-this.gameAreaTop-this.borderWidth),this.ctx.fillStyle="#FFD700";for(const r of this.obstacles)this.ctx.fillRect(r.position.x,r.position.y,r.size.x,r.size.y);for (const r of this.berries) {
+    if (r.collected) continue;
 
-              case "rainbow": // 🟡🟢🔵🟣🟠🌈 new rainbow berry look
-                    const gradient = this.ctx.createLinearGradient(
-                        r.position.x, r.position.y,
-                        r.position.x + r.size.x, r.position.y + r.size.y
-                    );
-                    gradient.addColorStop(0, "#FF0000"); // red
-                    gradient.addColorStop(0.2, "#FFA500"); // orange
-                    gradient.addColorStop(0.4, "#FFFF00"); // yellow
-                    gradient.addColorStop(0.6, "#00FF00"); // green
-                    gradient.addColorStop(0.8, "#0000FF"); // blue
-                    gradient.addColorStop(1, "#800080"); // violet
-                    this.ctx.fillStyle = gradient;
-                    break;
-            }this.ctx.beginPath(),this.ctx.arc(r.position.x+r.size.x/2,r.position.y+r.size.y/2,r.size.x/2,0,Math.PI*2),this.ctx.fill()}this.ctx.fillStyle=this.powerUps.freeze>0?"#666666":"#FF8800";for(const r of this.predators)this.ctx.save(),this.ctx.translate(r.position.x+r.size.x/2,r.position.y+r.size.y/2),this.ctx.rotate(r.rotation),this.ctx.beginPath(),this.ctx.moveTo(12,0),this.ctx.lineTo(-8,-8),this.ctx.lineTo(-8,8),this.ctx.closePath(),this.ctx.fill(),this.ctx.restore();const t=this.avatar.position.x+this.avatar.size.x/2,n=this.avatar.position.y+this.avatar.size.y/2;this.ctx.fillStyle=this.powerUps.invincibility>0?"#FFFF88":"#FFFFFF",this.ctx.beginPath(),this.ctx.arc(t,n,this.avatar.size.x/2,0,Math.PI*2),this.ctx.fill(),this.ctx.fillStyle=this.powerUps.speedBoost>0?"#00FFFF":"#4444FF",this.ctx.beginPath(),this.ctx.arc(t,n,this.avatar.size.x/3,0,Math.PI*2),this.ctx.fill()}reset(){const t=this.canvas.height-this.gameAreaTop;this.avatar.position={x:this.canvas.width/2,y:this.gameAreaTop+t/2},this.avatar.speed=this.baseAvatarSpeed,this.avatar.direction={x:0,y:0},this.berries=[],this.obstacles=[],this.predators=[],this.powerUps={speedBoost:0,invincibility:0,freeze:0},this.berriesCollected=0,this.berrySpawnCount=0,this.lastSpeedIncrease=0,this.gameStartTime=Date.now(),this.currentDirection="none",this.reverseControlsActive = false;this.reverseStartScore = 0;this.initializeGame()}handleResize(){this.avatar.position.x=Math.min(this.avatar.position.x,this.canvas.width-this.avatar.size.x),this.avatar.position.y=Math.max(this.gameAreaTop,Math.min(this.avatar.position.y,this.canvas.height-this.avatar.size.y))}getPowerUpStatus(){return{...this.powerUps}}}
+    switch (r.type) {
+
+        case "red":
+            this.ctx.fillStyle = "#FF0000";
+            this.ctx.fillRect(r.position.x, r.position.y, r.size.x, r.size.y);
+            break;
+
+        case "blue":
+            this.ctx.fillStyle = "#0088FF";
+            this.ctx.fillRect(r.position.x, r.position.y, r.size.x, r.size.y);
+            break;
+
+        case "white":
+            this.ctx.fillStyle = "#FFFFFF";
+            this.ctx.fillRect(r.position.x, r.position.y, r.size.x, r.size.y);
+            break;
+
+        case "purple":
+            this.ctx.fillStyle = "#AA00FF";
+            this.ctx.fillRect(r.position.x, r.position.y, r.size.x, r.size.y);
+            break;
+
+        case "gray":
+            this.ctx.fillStyle = "#888888";
+            this.ctx.fillRect(r.position.x, r.position.y, r.size.x, r.size.y);
+            break;
+
+        case "reverse":
+            this.ctx.fillStyle = "#00CC66";
+            this.ctx.beginPath();
+            this.ctx.arc(
+                r.position.x + r.size.x / 2,
+                r.position.y + r.size.y / 2,
+                r.size.x / 2,
+                0,
+                Math.PI * 2
+            );
+            this.ctx.fill();
+            
+            // swirl on top
+            this.ctx.fillStyle = "white";
+            this.ctx.font = "bold 14px sans-serif";
+            this.ctx.fillText("🌀", r.position.x + 4, r.position.y + 14);
+            break;
+
+        case "rainbow":
+            const gradient = this.ctx.createLinearGradient(
+                r.position.x, r.position.y,
+                r.position.x + r.size.x, r.position.y + r.size.y
+            );
+            gradient.addColorStop(0, "#FF0000");
+            gradient.addColorStop(0.2, "#FFA500");
+            gradient.addColorStop(0.4, "#FFFF00");
+            gradient.addColorStop(0.6, "#00FF00");
+            gradient.addColorStop(0.8, "#0000FF");
+            gradient.addColorStop(1, "#800080");
+
+            this.ctx.fillStyle = gradient;
+            this.ctx.fillRect(r.position.x, r.position.y, r.size.x, r.size.y);
+            break;
+
+    }
+}
+this.ctx.beginPath(),this.ctx.arc(r.position.x+r.size.x/2,r.position.y+r.size.y/2,r.size.x/2,0,Math.PI*2),this.ctx.fill()}this.ctx.fillStyle=this.powerUps.freeze>0?"#666666":"#FF8800";for(const r of this.predators)this.ctx.save(),this.ctx.translate(r.position.x+r.size.x/2,r.position.y+r.size.y/2),this.ctx.rotate(r.rotation),this.ctx.beginPath(),this.ctx.moveTo(12,0),this.ctx.lineTo(-8,-8),this.ctx.lineTo(-8,8),this.ctx.closePath(),this.ctx.fill(),this.ctx.restore();const t=this.avatar.position.x+this.avatar.size.x/2,n=this.avatar.position.y+this.avatar.size.y/2;this.ctx.fillStyle=this.powerUps.invincibility>0?"#FFFF88":"#FFFFFF",this.ctx.beginPath(),this.ctx.arc(t,n,this.avatar.size.x/2,0,Math.PI*2),this.ctx.fill(),this.ctx.fillStyle=this.powerUps.speedBoost>0?"#00FFFF":"#4444FF",this.ctx.beginPath(),this.ctx.arc(t,n,this.avatar.size.x/3,0,Math.PI*2),this.ctx.fill()}reset(){const t=this.canvas.height-this.gameAreaTop;this.avatar.position={x:this.canvas.width/2,y:this.gameAreaTop+t/2},this.avatar.speed=this.baseAvatarSpeed,this.avatar.direction={x:0,y:0},this.berries=[],this.obstacles=[],this.predators=[],this.powerUps={speedBoost:0,invincibility:0,freeze:0},this.berriesCollected=0,this.berrySpawnCount=0,this.lastSpeedIncrease=0,this.gameStartTime=Date.now(),this.currentDirection="none",this.reverseControlsActive = false;this.reverseStartScore = 0;this.initializeGame()}handleResize(){this.avatar.position.x=Math.min(this.avatar.position.x,this.canvas.width-this.avatar.size.x),this.avatar.position.y=Math.max(this.gameAreaTop,Math.min(this.avatar.position.y,this.canvas.height-this.avatar.size.y))}getPowerUpStatus(){return{...this.powerUps}}}
 class Zd {
   constructor(canvas, kdInstance){
     this.currentDirection = "none";
