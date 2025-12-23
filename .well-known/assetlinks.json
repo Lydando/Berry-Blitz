@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "io.github.lydando.twa",
+      "sha256_cert_fingerprints": [
+        "DB:C3:94:96:56:57:89:F5:5F:F2:AF:A4:4C:6F:D1:E1:8A:C4:77:52:09:3C:66:FF:91:25:90:C6:C1:7F:2F:83"
+      ]
+    }
+  }
+]
