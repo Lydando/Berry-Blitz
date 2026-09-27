@@ -215,122 +215,37 @@ case "reverse": // 🟢 Reverse Controls Berry
 checkBerrySpawning(){this.berries.filter(n=>!n.collected).length===0&&this.generateBerries()}checkPredatorSpawning(){const t=Math.floor(this.berriesCollected/10)+1;this.predators.length<t&&this.spawnPredator()}checkSpeedIncrease(){const t=Math.floor(this.berriesCollected/20);if(t>this.lastSpeedIncrease){this.lastSpeedIncrease=t,this.avatar.speed=this.baseAvatarSpeed*Math.pow(1.05,t);const n=Math.pow(1.05,t);for(const r of this.predators)r.speed=this.basePredatorSpeed*n}}render(){this.ctx.fillStyle="#000000",this.ctx.fillRect(0,0,this.canvas.width,this.canvas.height),this.ctx.strokeStyle="#FF0000",this.ctx.lineWidth=this.borderWidth,this.ctx.strokeRect(this.borderWidth/2,this.gameAreaTop+this.borderWidth/2,this.canvas.width-this.borderWidth,this.canvas.height-this.gameAreaTop-this.borderWidth),this.ctx.fillStyle="#FFD700";this.obstacleImage||(this.obstacleImage=new Image(),this.obstacleImage.src="./obstacle.png");for(const r of this.obstacles){if(this.obstacleImage.complete&&this.obstacleImage.naturalWidth>0)this.ctx.drawImage(this.obstacleImage,r.position.x-r.size.x*0.5,r.position.y-r.size.y*0.5,r.size.x*2,r.size.y*2);else this.ctx.fillRect(r.position.x,r.position.y,r.size.x,r.size.y)}for (const r of this.berries) {
     if (r.collected) continue;
 
-      switch (r.type) {
-      
-          case "red":
-              this.ctx.fillStyle = "#FF0000";
-              this.ctx.beginPath();
-              this.ctx.arc(
-                  r.position.x + r.size.x / 2,
-                  r.position.y + r.size.y / 2,
-                  r.size.x / 2,
-                  0,
-                  Math.PI * 2
-              );
-              this.ctx.fill();
-              break;
-      
-          case "blue":
-              this.ctx.fillStyle = "#0088FF";
-              this.ctx.beginPath();
-              this.ctx.arc(
-                  r.position.x + r.size.x / 2,
-                  r.position.y + r.size.y / 2,
-                  r.size.x / 2,
-                  0,
-                  Math.PI * 2
-              );
-              this.ctx.fill();
-              break;
-      
-          case "white":
-              this.ctx.fillStyle = "#FFFFFF";
-              this.ctx.beginPath();
-              this.ctx.arc(
-                  r.position.x + r.size.x / 2,
-                  r.position.y + r.size.y / 2,
-                  r.size.x / 2,
-                  0,
-                  Math.PI * 2
-              );
-              this.ctx.fill();
-              break;
-      
-          case "purple":
-              this.ctx.fillStyle = "#AA00FF";
-              this.ctx.beginPath();
-              this.ctx.arc(
-                  r.position.x + r.size.x / 2,
-                  r.position.y + r.size.y / 2,
-                  r.size.x / 2,
-                  0,
-                  Math.PI * 2
-              );
-              this.ctx.fill();
-              break;
-      
-          case "gray":
-              this.ctx.fillStyle = "#888888";
-              this.ctx.beginPath();
-              this.ctx.arc(
-                  r.position.x + r.size.x / 2,
-                  r.position.y + r.size.y / 2,
-                  r.size.x / 2,
-                  0,
-                  Math.PI * 2
-              );
-              this.ctx.fill();
-              break;
-      
-          case "reverse":
-             // draw the white circle
-              this.ctx.fillStyle = "#C8E6C9";
-              this.ctx.beginPath();
-              this.ctx.arc(
-                  r.position.x + r.size.x / 2,
-                  r.position.y + r.size.y / 2,
-                  r.size.x / 2,
-                  0,
-                  Math.PI * 2
-              );
-              this.ctx.fill();
-              
-              // draw centered spiral
-              this.ctx.font = `${r.size.x * 0.9}px sans-serif`;
-              this.ctx.textAlign = "center";
-              this.ctx.textBaseline = "middle";
-              this.ctx.fillText(
-                  "🌀",
-                  r.position.x + r.size.x / 2,
-                  r.position.y + r.size.y / 2
-              );
+     if (!this.berryImages) {
+  this.berryImages = {
+    red: new Image(),
+    blue: new Image(),
+    white: new Image(),
+    purple: new Image(),
+    gray: new Image(),
+    rainbow: new Image(),
+    reverse: new Image()
+  };
 
-              break;
-      
-          case "rainbow":
-              const gradient = this.ctx.createLinearGradient(
-                  r.position.x, r.position.y,
-                  r.position.x + r.size.x, r.position.y + r.size.y
-              );
-              gradient.addColorStop(0, "#FF0000");
-              gradient.addColorStop(0.2, "#FFA500");
-              gradient.addColorStop(0.4, "#FFFF00");
-              gradient.addColorStop(0.6, "#00FF00");
-              gradient.addColorStop(0.8, "#0000FF");
-              gradient.addColorStop(1, "#800080");
-      
-              this.ctx.fillStyle = gradient;
-              this.ctx.beginPath();
-              this.ctx.arc(
-                  r.position.x + r.size.x / 2,
-                  r.position.y + r.size.y / 2,
-                  r.size.x / 2,
-                  0,
-                  Math.PI * 2
-              );
-              this.ctx.fill();
-              break;
-      }
+  this.berryImages.red.src = "./berry-red.png";
+  this.berryImages.blue.src = "./berry-blue-speed.png";
+  this.berryImages.white.src = "./berry-white-shield.png";
+  this.berryImages.purple.src = "./berry-purple-freeze.png";
+  this.berryImages.gray.src = "./berry-gray-thorn.png";
+  this.berryImages.rainbow.src = "./berry-rainbow.png";
+  this.berryImages.reverse.src = "./berry-green-reverse.png";
+}
+
+const berryImage = this.berryImages[r.type];
+
+if (berryImage && berryImage.complete && berryImage.naturalWidth > 0) {
+  this.ctx.drawImage(
+    berryImage,
+    r.position.x + (r.size.x - 24) / 2,
+    r.position.y + (r.size.y - 24) / 2,
+    24,
+    24
+  );
+}
 
 }
 this.predatorImage||(this.predatorImage=new Image(),this.predatorImage.src="./predator.png");for(const r of this.predators){this.ctx.save();this.ctx.translate(r.position.x+r.size.x/2,r.position.y+r.size.y/2);this.ctx.rotate(r.rotation);if(this.predatorImage.complete&&this.predatorImage.naturalWidth>0)this.ctx.drawImage(this.predatorImage,-23,-23,46,46);else{this.ctx.fillStyle=this.powerUps.freeze>0?"#666666":"#FF8800";this.ctx.beginPath();this.ctx.moveTo(12,0);this.ctx.lineTo(-8,-8);this.ctx.lineTo(-8,8);this.ctx.closePath();this.ctx.fill()}this.ctx.restore()};const avatarDrawWidth=this.avatar.size.x*2.5,avatarDrawHeight=this.avatar.size.y*2.5,avatarDrawX=this.avatar.position.x+(this.avatar.size.x-avatarDrawWidth)/2,avatarDrawY=this.avatar.position.y+(this.avatar.size.y-avatarDrawHeight)/2;if(this.avatarImage.complete&&this.avatarImage.naturalWidth>0)this.ctx.drawImage(this.avatarImage,avatarDrawX,avatarDrawY,avatarDrawWidth,avatarDrawHeight);}reset(){const t=this.canvas.height-this.gameAreaTop;this.avatar.position={x:this.canvas.width/2,y:this.gameAreaTop+t/2},this.avatar.speed=this.baseAvatarSpeed,this.avatar.direction={x:0,y:0},this.berries=[],this.obstacles=[],this.predators=[],this.powerUps={speedBoost:0,invincibility:0,freeze:0},this.berriesCollected=0,this.berrySpawnCount=0,this.lastSpeedIncrease=0,this.gameStartTime=Date.now(),this.currentDirection="none",this.zd.reset(),this.reverseControlsActive = false;this.reverseStartScore = 0;this.initializeGame()}handleResize(){this.avatar.position.x=Math.min(this.avatar.position.x,this.canvas.width-this.avatar.size.x),this.avatar.position.y=Math.max(this.gameAreaTop,Math.min(this.avatar.position.y,this.canvas.height-this.avatar.size.y))}getPowerUpStatus(){return{...this.powerUps}}}
