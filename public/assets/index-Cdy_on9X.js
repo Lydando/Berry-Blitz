@@ -240,10 +240,10 @@ const berryImage = this.berryImages[r.type];
 if (berryImage && berryImage.complete && berryImage.naturalWidth > 0) {
   this.ctx.drawImage(
     berryImage,
-    r.position.x + (r.size.x - 32) / 2,
-    r.position.y + (r.size.y - 32) / 2,
-    32,
-    32
+    r.position.x + (r.size.x - 40) / 2,
+    r.position.y + (r.size.y - 40) / 2,
+    40,
+    40
   );
 }
 
