@@ -52,7 +52,6 @@ Error generating stack: `+i.message+`
                   objectFit: "contain",
                   marginRight: "8px"
                 }
-                }
               }),
               "Rainbow: Removes 15 Obstacles (Score ≥ 50)"
             ]
