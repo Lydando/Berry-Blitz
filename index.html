@@ -26,16 +26,79 @@
     <link rel="stylesheet" crossorigin href="public/assets/index-CkRX1Kq5.css" />
 
     <style>
+      #root h1[class*="text-green-400"] {
+        background: linear-gradient(180deg, #ffe66d 0%, #ffb52e 55%, #e87516 100%);
+        background-clip: text;
+        -webkit-background-clip: text;
+        color: transparent !important;
+        -webkit-text-fill-color: transparent;
+      }
+      
+      #root p[class*="text-yellow-300"] {
+        color: #ffffff !important;
+      }
+      
+      #root h2[class*="text-cyan-400"] {
+        color: #f08c27 !important;
+      }
+      
+      #root div[class*="text-4xl"][class*="text-cyan-400"] {
+        color: #ffb52e !important;
+      }
+      
+      #root div[class*="text-4xl"][class*="text-cyan-400"] + div {
+        color: #fff1d0 !important;
+      }
+      
       #root button {
-        border-radius: 0;
-        border: 3px solid rgba(255, 255, 255, 0.75);
-        box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.7);
+        --retro-edge: #d1d5db;
+        --retro-shadow: #25283a;
+        border-radius: 0 !important;
+        border: 3px solid var(--retro-edge);
+        box-shadow: 4px 4px 0 var(--retro-shadow);
         transition: transform 0.08s ease, box-shadow 0.08s ease, filter 0.08s ease;
+      }
+      
+      #root button[class*="bg-green-500"] {
+        --retro-edge: #ffe082;
+        --retro-shadow: #7c2d12;
+        background-color: #f59e0b !important;
+        color: #111111 !important;
+      }
+      
+      #root button[class*="bg-green-500"]:hover {
+        background-color: #fbbf24 !important;
+      }
+      
+      #root button[class*="bg-gray-600"] {
+        --retro-edge: #e5e7eb;
+        --retro-shadow: #343a48;
+        background-color: #9ca3af !important;
+        color: #111111 !important;
+      }
+      
+      #root button[class*="bg-gray-600"]:hover {
+        background-color: #c1c8d2 !important;
+      }
+      
+      #root button[class*="bg-blue-600"] {
+        --retro-edge: #7dd3fc;
+        --retro-shadow: #172554;
+      }
+      
+      #root button[class*="bg-yellow-600"] {
+        --retro-edge: #fde047;
+        --retro-shadow: #713f12;
+      }
+      
+      #root button[class*="bg-red-600"] {
+        --retro-edge: #fca5a5;
+        --retro-shadow: #7f1d1d;
       }
       
       #root button:active {
         transform: translate(3px, 3px);
-        box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.7);
+        box-shadow: 1px 1px 0 var(--retro-shadow);
         filter: brightness(0.9);
       }
       </style>
