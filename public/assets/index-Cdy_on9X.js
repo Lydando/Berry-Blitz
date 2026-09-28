@@ -53,7 +53,7 @@ Error generating stack: `+i.message+`
                   marginRight: "8px"
                 }
               }),
-              "Rainbow: Removes 15 Obstacles (Score ≥ 50)"
+              "Rainbow: Clears 15 obstacles at 50+"
             ]
           })
         }),
@@ -72,7 +72,7 @@ Error generating stack: `+i.message+`
             marginRight: "8px"
           }
       }),
-      "Reverse: Reverse controls until 5 berries eaten"
+      "Reverse: Flips controls for 5 berries"
     ]
   })
 })           
