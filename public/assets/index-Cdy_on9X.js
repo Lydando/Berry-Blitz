@@ -119,7 +119,7 @@ generateBerries() {
   const orbitRadius = 64;
   const safeMargin = orbitRadius + 24 + 8;
   for (let r = 0; r < 5; r++) {
-    const isGuardianBerry = this.berriesCollected >= 30 && !this.guardianBerrySpawned && this.canvas.width >= 220 && Math.random() < 0.05;
+    const isGuardianBerry = this.berriesCollected >= 25 && !this.guardianBerrySpawned && this.canvas.width >= 220 && Math.random() < 1;
     let position, attempts = 0, blocked;
     do {
       if (isGuardianBerry) {
