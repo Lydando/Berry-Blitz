@@ -116,12 +116,10 @@ generateBerries() {
   const rainbowSpawnIndex = allowRainbow ? Math.floor(Math.random() * 5) : -1;
   const spawnReverse = Math.random() < 1 / 6;
   const reverseSpawnIndex = spawnReverse ? Math.floor(Math.random() * 5) : -1;
-  const spawnGuardian = this.berriesCollected >= 30 && !this.guardianBerrySpawned && this.canvas.width >= 220 && Math.random() < 0.1;
-  const guardianSpawnIndex = spawnGuardian ? Math.floor(Math.random() * 5) : -1;
   const orbitRadius = 64;
   const safeMargin = orbitRadius + 24 + 8;
   for (let r = 0; r < 5; r++) {
-    const isGuardianBerry = r === guardianSpawnIndex;
+    const isGuardianBerry = this.berriesCollected >= 30 && !this.guardianBerrySpawned && this.canvas.width >= 220 && Math.random() < 0.05;
     let position, attempts = 0, blocked;
     do {
       if (isGuardianBerry) {
