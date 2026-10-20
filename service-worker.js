@@ -49,6 +49,11 @@ const ASSETS_TO_CACHE = [
   "./Overdrive.mp3"
 ];
 
+const GOOGLE_FONT_HOSTS = new Set([
+  "fonts.googleapis.com",
+  "fonts.gstatic.com"
+]);
+
 self.addEventListener("install", (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME)
@@ -62,7 +67,9 @@ self.addEventListener("activate", (event) => {
     caches.keys().then((cacheNames) =>
       Promise.all(
         cacheNames
-          .filter((name) => name.startsWith("berryblitz-cache-") && name !== CACHE_NAME)
+          .filter((name) =>
+            name.startsWith("berryblitz-cache-") && name !== CACHE_NAME
+          )
           .map((name) => caches.delete(name))
       )
     ).then(() => self.clients.claim())
@@ -71,39 +78,42 @@ self.addEventListener("activate", (event) => {
 
 self.addEventListener("fetch", (event) => {
   const request = event.request;
-
   if (request.method !== "GET") return;
 
   const requestUrl = new URL(request.url);
   const scopeUrl = new URL(self.registration.scope);
 
-  // Leave external requests, such as Google Fonts, to the browser.
-  if (
-    requestUrl.origin !== self.location.origin ||
-    !requestUrl.pathname.startsWith(scopeUrl.pathname)
-  ) {
-    return;
-  }
+  const isAppRequest =
+    requestUrl.origin === self.location.origin &&
+    requestUrl.pathname.startsWith(scopeUrl.pathname);
+
+  const isGoogleFontRequest =
+    GOOGLE_FONT_HOSTS.has(requestUrl.hostname);
+
+  // Leave other third-party requests to the browser.
+  if (!isAppRequest && !isGoogleFontRequest) return;
 
   event.respondWith((async () => {
-    const cachedResponse = await caches.match(request);
+    const cache = await caches.open(CACHE_NAME);
+    const cachedResponse = await cache.match(request);
 
-    if (cachedResponse) {
-      return cachedResponse;
-    }
+    if (cachedResponse) return cachedResponse;
 
     try {
       const networkResponse = await fetch(request);
 
-      if (networkResponse.ok && networkResponse.type === "basic") {
-        const cache = await caches.open(CACHE_NAME);
+      // Google Fonts stylesheets may be opaque responses.
+      if (
+        networkResponse.ok ||
+        (isGoogleFontRequest && networkResponse.type === "opaque")
+      ) {
         cache.put(request, networkResponse.clone()).catch(() => {});
       }
 
       return networkResponse;
     } catch (error) {
       if (request.mode === "navigate") {
-        const offlinePage = await caches.match(
+        const offlinePage = await cache.match(
           new URL("./index.html", scopeUrl).href
         );
 
@@ -112,7 +122,8 @@ self.addEventListener("fetch", (event) => {
 
       return new Response("This game file is not available offline yet.", {
         status: 503,
-        statusText: "Offline"
+        statusText: "Offline",
+        headers: { "Content-Type": "text/plain; charset=utf-8" }
       });
     }
   })());
