@@ -1,4 +1,4 @@
-const CACHE_NAME = "berryblitz-cache-v18";
+const CACHE_NAME = "berryblitz-cache-v19";
 
 const ASSETS_TO_CACHE = [
   "./",
